@@ -1,4 +1,4 @@
-# pyrtz
+# pyrtz2
 
 Analysis of AFM force curves in Python.
 
