@@ -20,12 +20,6 @@ dependencies = [
     'tqdm',
 ]
 
-[tool.hatch.metadata]
-author = "Hoseyn A. Amiri"
-home-page = "https://github.com/HoseynAAmiri/pyrtz2"
-LICENSE = "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"
-
-
 [project.urls]
 Documentation = "https://www.youtube.com/@hoseynamiri"
 Source = "https://github.com/HoseynAAmiri/pyrtz2"
