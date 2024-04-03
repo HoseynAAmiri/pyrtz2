@@ -11,7 +11,8 @@ from ..utils.utils import load_json, update_annotations
 def render(app: Dash) -> html.Div:
     @app.callback(
         [Output(ids.CP_ANNOTATIONS, 'data', allow_duplicate=True),
-         Output(ids.VD_ANNOTATIONS, 'data', allow_duplicate=True)],
+         Output(ids.VD_ANNOTATIONS, 'data', allow_duplicate=True),
+         Output(ids.UPLOAD_ANNOTATIONS, 'contents')],
         [Input(ids.UPLOAD_ANNOTATIONS, 'contents')],
         [State(ids.CP_ANNOTATIONS, 'data'),
          State(ids.VD_ANNOTATIONS, 'data')],
@@ -28,12 +29,12 @@ def render(app: Dash) -> html.Div:
             vd_annotations = json.loads(vd_data)
             vd_annotations = update_annotations(
                 vd_annotations, loaded_annotations)
-            return no_update, json.dumps(vd_annotations)
+            return no_update, json.dumps(vd_annotations), None
         elif isinstance(first_value, int):
             cp_annotations = json.loads(cp_data)
             cp_annotations = update_annotations(
                 cp_annotations, loaded_annotations)
-            return json.dumps(cp_annotations), no_update
+            return json.dumps(cp_annotations), no_update, None
 
     return html.Div(
         children=[
