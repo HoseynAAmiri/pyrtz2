@@ -9,9 +9,18 @@ from . import ids, fig
 from ..utils.utils import load, get_current_annotation
 
 
-class AFM(Protocol):
-    def detect_contact(self, key: tuple[str, ...]) -> int:
+class Curve(Protocol):
+    def detect_contact(self) -> int:
         ...
+
+
+class CurveSet(Protocol):
+    def __getitem__(self, key: tuple[str]) -> Curve:
+        ...
+
+
+class AFM(Protocol):
+    experiment: CurveSet
 
 
 def render(app: Dash) -> html.Div:
@@ -94,9 +103,9 @@ def render(app: Dash) -> html.Div:
         if trigger_id == ids.RESET_CONTACT:
             cp_annotations[repr(key)] = 0
         elif trigger_id == ids.DETECT_CONTACT:
-            experiment: AFM = load(encoded_experiment)
+            afm: AFM = load(encoded_experiment)
             cp_annotations[repr(
-                key)] = experiment.experiment[key].detect_contact()
+                key)] = afm.experiment[key].detect_contact()
 
         return json.dumps(cp_annotations), no_update
 

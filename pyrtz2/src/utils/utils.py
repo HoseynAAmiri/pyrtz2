@@ -9,7 +9,6 @@ from datetime import datetime
 
 
 def get_current_annotation(current_dropdown_value, data: str):
-    print(type(current_dropdown_value), current_dropdown_value)
     key = eval(current_dropdown_value)['key']
     annotations = json.loads(data)
     annotation = annotations[repr(key)]
