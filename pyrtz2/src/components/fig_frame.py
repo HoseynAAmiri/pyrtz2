@@ -49,7 +49,7 @@ def render(app: Dash) -> html.Div:
     )
     def show_data(curve_value, adjust, vd_data, cp_data, encoded_experiment, contact_fig, forcetime_fig):
         ctx = callback_context
-        if not ctx.triggered:
+        if not ctx.triggered or not vd_data or not cp_data:
             raise PreventUpdate
         trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
@@ -133,7 +133,7 @@ def render(app: Dash) -> html.Div:
         children=[
             fig.render(id=ids.CONTACT_FIG,
                        title=r"$\text{Selected Contact Point: }$",
-                       xaxis=r"$Z_{sensor} \text{ (m)}$"),
+                       xaxis=r"$Indentation \text{ (m)}$"),
             fig.render(id=ids.FORCETIME_FIG,
                        title=r"$\text{Dwell and Relaxation}$",
                        xaxis=r"$Time \text{ (s)}$"),
