@@ -22,10 +22,11 @@ def update_annotations(original_annotations: dict, loaded_annotations: dict) -> 
     return original_annotations
 
 
-def make_folder(load_dir: str, name: str = None) -> str:
+def make_folder(load_dir: str, name: str = "") -> str:
     if not name:
-        name = datetime.now()
-    save_dir = load_dir + '/' + name.strftime('%Y-%m-%d_%H-%M-%S') + '/'
+        time = datetime.now()
+        name = time.strftime('%Y-%m-%d_%H-%M-%S') + '/'
+    save_dir = load_dir + '/' + name
     os.mkdir(save_dir)
     return save_dir
 

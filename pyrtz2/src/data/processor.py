@@ -1,11 +1,13 @@
 import ast
 import json
 import pandas as pd
+import base64
+from io import BytesIO
 
 from afm import AFM
 
 
-def process_experiment(experiment: AFM, cp_data: str, vd_data: str) -> AFM:
+def process_experiment(experiment: AFM, cp_data: str, vd_data: str, indentation: float | list[float]) -> tuple[AFM, pd.DataFrame]:
     cp_annotations = json.loads(cp_data)
     cp_annotations = {ast.literal_eval(
         key): value for key, value in cp_annotations.items()}
@@ -14,26 +16,27 @@ def process_experiment(experiment: AFM, cp_data: str, vd_data: str) -> AFM:
     vd_annotations = {ast.literal_eval(
         key): value for key, value in vd_annotations.items()}
 
-    # THIS CAN BE REPLACED BY UPDATE ANNOTATIONS FROM FILE
-    for key, cp in cp_annotations.items():
-        curve = experiment.experiment[key]
-        curve.set_contact_index(cp)
+    experiment.experiment.update_annotations(cp_annotations)
+    experiment.experiment.update_annotations(vd_annotations)
 
-    experiment.remove_unannotated()
-    for key in experiment.curve_keys:
-        curve = experiment.experiment[key]
-        if curve.contact_index > 2 and vd_annotations[key]:
-            curve.correct_virt_defl()
-        experiment.adjust_to_contact(key)
-
-    return experiment
+    df = experiment.experiment.get_fit_all(
+        experiment.probe_diameter, ind=indentation)
+    return experiment, df
 
 
-def get_all_fit(experiment_processed: AFM, indentation: float = 1.0e-6) -> pd.DataFrame | pd.Series:
-    all_fit = []
-    for key in experiment_processed.curve_keys:
-        fit_results = experiment_processed.get_fit(key, indentation)
-        all_fit.append(fit_results)
+def process_indentation(indentation: str) -> float | list[float]:
+    indentation_list = indentation.split(';')
+    ind = [float(i) for i in indentation_list]
+    if len(ind) == 1:
+        ind = ind[0]
+    return ind
 
-    combined_results = pd.concat(all_fit, ignore_index=True)
-    return combined_results
+
+def get_pdf(experiment: AFM) -> BytesIO:
+    pdf_merger = experiment.experiment.export_figures()
+
+    pdf_bytes = BytesIO()
+    pdf_merger.write(pdf_bytes)
+    pdf_bytes.seek(0)
+
+    return pdf_bytes

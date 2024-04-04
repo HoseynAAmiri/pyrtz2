@@ -4,7 +4,7 @@ import json
 
 from ..components import ids
 from ..utils.utils import load, dump
-from .processor import process_experiment, get_all_fit
+from .processor import process_experiment, process_indentation, get_pdf
 
 
 def render(app: Dash) -> dcc.Download:
@@ -38,8 +38,8 @@ def render(app: Dash) -> dcc.Download:
 
     @app.callback(
         [Output(ids.DOWNLOAD, 'data', allow_duplicate=True),
-         Output(ids.EXPERIMENT_PROCESSED, 'data'),
-         Output(ids.DOWNLOAD_FITS, 'children'),
+         Output(ids.EXPERIMENT_PROCESSED, 'data', allow_duplicate=True),
+         Output(ids.DOWNLOAD_FITS, 'children', allow_duplicate=True),
          Output(ids.INDENTATION, 'value')],
         [Input(ids.DOWNLOAD_FITS, "n_clicks")],
         [State(ids.EXPERIMENT, 'data'),
@@ -52,13 +52,27 @@ def render(app: Dash) -> dcc.Download:
     def download_fits_csv(_, encoded_experiment, cp_data, vd_data, indentation, exp_output):
         if indentation:
             experiment = load(encoded_experiment)
-            experiment_processed = process_experiment(
-                experiment, cp_data, vd_data)
-            indentation = float(indentation)
+            indentation = process_indentation(indentation)
+            experiment_processed, df = process_experiment(
+                experiment, cp_data, vd_data, indentation)
             exp_name = exp_output.split('\'')[1]
-            df = get_all_fit(experiment_processed, indentation=indentation)
-            return dcc.send_data_frame(df.to_csv, filename=f"{exp_name}_all_fits.csv"), dump(experiment_processed), no_update, no_update
+            return dcc.send_data_frame(df.to_csv, filename=f"{exp_name}_its.csv"), dump(experiment_processed), no_update, no_update
 
         return no_update, no_update, no_update, "Unable to proceed without indentation!"
+
+    @app.callback(
+        [Output(ids.DOWNLOAD, 'data', allow_duplicate=True),
+         Output(ids.DOWNLOAD_CURVES, 'children')],
+        [Input(ids.DOWNLOAD_CURVES, "n_clicks")],
+        [State(ids.EXPERIMENT_PROCESSED, 'data'),
+         State(ids.LOAD_OUTPUT, 'children')],
+        prevent_initial_call=True
+    )
+    def download_curves_pdf(_, encoded_experiment_processed, exp_output):
+        experiment_processed = load(encoded_experiment_processed)
+        exp_name = exp_output.split('\'')[1]
+        pdf_src = get_pdf(experiment_processed)
+
+        return dcc.send_bytes(src=pdf_src.getvalue(), filename=f"{exp_name}_curves.pdf", base64=True), no_update
 
     return dcc.Download(id=ids.DOWNLOAD)

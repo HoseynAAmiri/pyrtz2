@@ -394,15 +394,16 @@ class Curve:
         fig.add_shape(type='line', y0=y_line, y1=y_line, x0=min(x),
                       x1=max(x), line=dict(color='red', width=1.2))
 
-        x, y = self.fits_data['indent']
-        trace = go.Scatter(x=x, y=y, name='PolyFit',
-                           mode='lines', line={'color': 'red'})
-        fig.add_trace(trace)
+        if hasattr(self, 'fits_data'):
+            x, y = self.fits_data['indent']
+            trace = go.Scatter(x=x, y=y, name='PolyFit',
+                               mode='lines', line={'color': 'red'})
+            fig.add_trace(trace)
 
-        x, y = self.fits_data['hertzian']
-        trace = go.Scatter(x=x, y=y, name='HertzianFit',
-                           mode='lines', line={'color': 'green', 'width': 3})
-        fig.add_trace(trace)
+            x, y = self.fits_data['hertzian']
+            trace = go.Scatter(x=x, y=y, name='HertzianFit',
+                               mode='lines', line={'color': 'green', 'width': 3})
+            fig.add_trace(trace)
 
         return fig
 
@@ -437,16 +438,16 @@ class Curve:
                            marker_color='blue', yaxis='y2')
         fig.add_trace(trace)
 
-        x, y = self.fits_data['dwell']
+        if hasattr(self, 'fits_data'):
+            x, y = self.fits_data['dwell']
+            trace = go.Scatter(x=x, y=y, name='DwellFit',
+                               mode='lines', line={'color': 'green', 'width': 3})
+            fig.add_trace(trace)
 
-        trace = go.Scatter(x=x, y=y, name='DwellFit',
-                           mode='lines', line={'color': 'green', 'width': 3})
-        fig.add_trace(trace)
-
-        x, y = self.fits_data['relaxation']
-        trace = go.Scatter(x=x, y=y, yaxis='y2', name='RelaxationFit',
-                           mode='lines', line={'color': 'green', 'width': 3})
-        fig.add_trace(trace)
+            x, y = self.fits_data['relaxation']
+            trace = go.Scatter(x=x, y=y, yaxis='y2', name='RelaxationFit',
+                               mode='lines', line={'color': 'green', 'width': 3})
+            fig.add_trace(trace)
 
         return fig
 
