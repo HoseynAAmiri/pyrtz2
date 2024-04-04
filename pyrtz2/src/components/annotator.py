@@ -43,7 +43,7 @@ def render(app: Dash) -> html.Div:
             dcc.Upload(
                 className='drag-drop',
                 children=html.Div(
-                    ['Drag and Drop or ', html.A('Select Annotation File')]),
+                    ['Drag and Drop or ', html.A('Select Annotation File'), ' to Load']),
                 id=ids.UPLOAD_ANNOTATIONS,
                 multiple=False
             ),
