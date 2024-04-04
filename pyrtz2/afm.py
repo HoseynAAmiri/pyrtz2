@@ -1,6 +1,6 @@
 import copy
 import os
-from . import asylum
+import asylum
 
 
 class AFM():

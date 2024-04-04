@@ -2,7 +2,7 @@ import ast
 import json
 import pandas as pd
 
-from pyrtz2.afm import AFM
+from afm import AFM
 
 
 def process_experiment(experiment: AFM, cp_data: str, vd_data: str) -> AFM:

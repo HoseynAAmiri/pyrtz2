@@ -30,6 +30,7 @@ INDENTATION = "indentation"
 
 DOWNLOAD_ANNOTATIONS = "download-annotations"
 DOWNLOAD_FITS = "download-fits"
+DOWNLOAD_CURVES = "download-curves"
 DOWNLOAD_ANIMATION = "download-animation"
 DOWNLOAD = 'download'
 
