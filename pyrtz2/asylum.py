@@ -4,7 +4,7 @@ import pandas as pd
 import re
 import os
 
-from . import curves
+import curves
 
 
 def _get_notes(wave: dict) -> dict:

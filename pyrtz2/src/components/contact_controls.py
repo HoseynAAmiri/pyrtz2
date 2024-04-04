@@ -118,28 +118,26 @@ def render(app: Dash) -> html.Div:
             dcc.Loading(
                 id=ids.LOADCONTACT_ANIMATION,
                 type="dot",
-                children=[
-                    html.Div(
-                        children=[
-                            html.Button(
-                                children="Detect Contact",
-                                id=ids.DETECT_CONTACT,
-                                n_clicks=0,
-                                className="dash-button"
-                            ),
-                            html.Button(
-                                children="Reset Contact",
-                                id=ids.RESET_CONTACT,
-                                n_clicks=0,
-                                className="dash-button"
-                            ),
-                        ],
-                        style={
-                            'display': 'flex',
-                            'gap': '5px',
-                        },
-                    ),
-                ]
+                children=html.Div(
+                    children=[
+                        html.Button(
+                            children="Detect Contact",
+                            id=ids.DETECT_CONTACT,
+                            n_clicks=0,
+                            className="dash-button"
+                        ),
+                        html.Button(
+                            children="Reset Contact",
+                            id=ids.RESET_CONTACT,
+                            n_clicks=0,
+                            className="dash-button"
+                        ),
+                    ],
+                    style={
+                        'display': 'flex',
+                        'gap': '5px',
+                    },
+                ),
             ),
             html.Button(
                 children="Download Annotations",

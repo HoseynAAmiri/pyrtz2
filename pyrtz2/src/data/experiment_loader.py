@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output, State
 
 import os
 
-from pyrtz2.afm import AFM
+from afm import AFM
 from ..components import ids
 from ..utils.utils import dump, make_json
 

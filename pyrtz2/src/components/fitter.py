@@ -35,14 +35,26 @@ def render(app: Dash) -> html.Div:
             dcc.Loading(
                 id=ids.DOWNLOAD_ANIMATION,
                 type="dot",
-                children=[
-                    html.Button(
-                        children="Download Fits",
-                        id=ids.DOWNLOAD_FITS,
-                        n_clicks=0,
-                        className="dash-button"
-                    ),
-                ]
+                children=html.Div(
+                    children=[
+                        html.Button(
+                            children="Download Fits",
+                            id=ids.DOWNLOAD_FITS,
+                            n_clicks=0,
+                            className="dash-button"
+                        ),
+                        html.Button(
+                            children="Download Curves",
+                            id=ids.DOWNLOAD_CURVES,
+                            n_clicks=0,
+                            className="dash-button"
+                        ),
+                    ],
+                    style={
+                        'display': 'flex',
+                        'gap': '5px',
+                    },
+                )
             )
         ],
         style={
