@@ -42,6 +42,7 @@ def make_fig(title: str, xaxis: str) -> go.Figure:
         paper_bgcolor='white',
         margin=dict(t=50, b=50, l=50, r=50),
         showlegend=False,
+        transition={'duration': 500}
     )
 
     fig.update_annotations(yshift=10)
@@ -100,9 +101,9 @@ def update_fig(fig: go.Figure, x, y, mode: str, color: str, hover: bool = False,
 
         fig.add_trace(trace)
     else:
-        fig['data'][0]['x'] = x
-        fig['data'][0]['y'] = y
-        fig['data'][0]['text'] = hover_texts
+        fig.data[0].x = x
+        fig.data[0].y = y
+        fig.data[0]['text'] = hover_texts
 
     return fig
 
@@ -112,22 +113,22 @@ def get_fig(fig: dict) -> go.Figure:
 
 
 def update_contact_line(cp: int, fig: go.Figure) -> go.Figure:
-
-    data = fig['data'][0]
-    fig['layout']['shapes'][0]['x0'] = data['x'][cp]
-    fig['layout']['shapes'][0]['x1'] = data['x'][cp]
-    fig['layout']['shapes'][1]['y0'] = data['y'][cp]
-    fig['layout']['shapes'][1]['y1'] = data['y'][cp]
-    fig['layout']['title']['text'] = fr"$\text{{Selected Contact Point: {cp}}}$"
+    data_x = fig.data[0].x
+    data_y = fig.data[0].y
+    fig.layout.shapes[0]['x0'] = data_x[cp]
+    fig.layout.shapes[0]['x1'] = data_x[cp]
+    fig.layout.shapes[1]['y0'] = data_y[cp]
+    fig.layout.shapes[1]['y1'] = data_y[cp]
+    fig.layout['title']['text'] = fr"$\text{{Selected Contact Point: {cp}}}$"
 
     return fig
 
 
 def adjust_to_contact(cp: int, fig: go.Figure) -> go.Figure:
-    fig.update_layout(transition={'duration': 500})
-    data = fig['data'][0]
-    x_data = np.array(data['x'])
-    y_data = np.array(data['y'])
+    data_x = fig.data[0].x
+    data_y = fig.data[0].y
+    x_data = np.array(data_x)
+    y_data = np.array(data_y)
     fig.update(
         data=[
             {

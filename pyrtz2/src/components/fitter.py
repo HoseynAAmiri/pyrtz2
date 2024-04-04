@@ -49,6 +49,12 @@ def render(app: Dash) -> html.Div:
                             n_clicks=0,
                             className="dash-button"
                         ),
+                        html.Button(
+                            children="Download Experiment",
+                            id=ids.DOWNLOAD_EXPERIMENT,
+                            n_clicks=0,
+                            className="dash-button"
+                        ),
                     ],
                     style={
                         'display': 'flex',

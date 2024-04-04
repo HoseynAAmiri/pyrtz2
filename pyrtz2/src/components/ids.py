@@ -29,8 +29,10 @@ FIT_CHECKLIST = "fit-checklist"
 INDENTATION = "indentation"
 
 DOWNLOAD_ANNOTATIONS = "download-annotations"
+DOWNLOAD_IMAGEDATA = "download-imagedata"
 DOWNLOAD_FITS = "download-fits"
 DOWNLOAD_CURVES = "download-curves"
+DOWNLOAD_EXPERIMENT = "download-experiment"
 DOWNLOAD_ANIMATION = "download-animation"
 DOWNLOAD = 'download'
 
