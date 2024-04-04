@@ -1,10 +1,9 @@
 import ast
 import json
 import pandas as pd
-import base64
 from io import BytesIO
 
-from afm import AFM
+from ...afm import AFM
 
 
 def process_experiment(experiment: AFM, cp_data: str, vd_data: str, indentation: float | list[float]) -> tuple[AFM, pd.DataFrame]:
