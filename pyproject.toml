@@ -11,18 +11,18 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"]
 dynamic = ["version", "description"]
 dependencies = [
-    'dash==2.16.1',
-    'dash-bootstrap-components==1.5.0',
-    'igor2==0.5.5',
-    'kaleido==0.2.1',
-    'numpy==1.26.4',
-    'pandas==2.0.3',
-    'pillow==9.4.0',
-    'plotly==5.20.0',
-    'PyPDF2==3.0.1',
-    'scikit-learn==1.4.1.post1',
-    'scipy==1.12.0',
-    'tqdm==4.66.2',
+    'dash',
+    'dash-bootstrap-components',
+    'igor2',
+    'kaleido',
+    'numpy',
+    'pandas',
+    'pillow',
+    'plotly',
+    'PyPDF2',
+    'scikit-learn',
+    'scipy',
+    'tqdm',
 ]
 
 [project.urls]
