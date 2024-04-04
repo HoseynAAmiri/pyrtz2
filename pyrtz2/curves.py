@@ -11,8 +11,8 @@ import io
 from tqdm import tqdm
 from typing import Any, Iterable
 
-from fit import lin_fit, poly_fit, hertzian_fit, biexponential_fit
-from src.components.fig import make_fig
+from .fit import lin_fit, poly_fit, hertzian_fit, biexponential_fit
+from .src.components.fig import make_fig
 
 
 def read_json_file(file: str) -> dict[tuple, bool | int]:

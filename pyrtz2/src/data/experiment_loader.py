@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 import os
 
-from afm import AFM
+from ...afm import AFM
 from ..components import ids
 from ..utils.utils import dump, make_json
 
