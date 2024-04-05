@@ -75,7 +75,7 @@ def group_values_by_keys(original_dict: dict) -> dict:
 
     new_dict = {}
     for key, value in original_dict.items():
-        new_key = key[:-1] if len(key) > 1 else key
+        new_key = key[:-1]
         if new_key not in new_dict:
             new_dict[new_key] = [value]
         else:

@@ -49,7 +49,7 @@ def render(app: Dash) -> html.Div:
     )
     def show_data(curve_value, adjust, vd_data, cp_data, encoded_experiment, contact_fig, forcetime_fig):
         ctx = callback_context
-        if not ctx.triggered or not vd_data or not cp_data:
+        if not ctx.triggered or not curve_value or not vd_data or not cp_data:
             raise PreventUpdate
         trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
