@@ -32,7 +32,7 @@ def render(app: Dash) -> html.Div:
         vd = get_current_annotation(curve_value, vd_data)
         if trigger_id == ids.CP_ANNOTATIONS and not vd and not adjust:
             raise PreventUpdate
-        print('raft too')
+
         name = eval(curve_value)['name'] + ".ibw"
         file_name = os.path.join(experiment_path, name)
         curve = load_ibw(file_name)
