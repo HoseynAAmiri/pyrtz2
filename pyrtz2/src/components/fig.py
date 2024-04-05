@@ -35,8 +35,7 @@ def make_fig(title: str, xaxis: str) -> go.Figure:
         margin=dict(t=50, b=50, l=50, r=50),
         showlegend=False,
         transition={'duration': 500},
-        width=800,
-        height=600
+        height=400
     )
 
     fig.update_annotations(yshift=10)

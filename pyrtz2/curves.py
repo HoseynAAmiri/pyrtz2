@@ -10,6 +10,7 @@ import ast
 import io
 from tqdm import tqdm
 from typing import Any, Iterable
+from time import sleep
 
 from .fit import lin_fit, poly_fit, hertzian_fit, biexponential_fit
 from .src.components.fig import make_fig
@@ -352,6 +353,8 @@ class Curve:
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
 
+        fig.update_layout(width=480)
+        sleep(1)
         return fig
 
     def get_dwell_fig_pdf(self) -> go.Figure:
@@ -364,28 +367,14 @@ class Curve:
                            marker_color='red')
         fig.add_trace(trace)
 
-        fig.update_layout(
-            yaxis2=dict(
-                title=r"$Indentation \text{ (m)}$",
-                overlaying='y',
-                side='right',
-                showgrid=False,
-                ticks='outside',
-                tickwidth=2,
-                showline=True,
-                linewidth=2,
-                linecolor='black',
-                tickprefix=r"$",
-                ticksuffix=r"$",
-            )
-        )
-
         if hasattr(self, 'fits_data'):
             x, y = self.fits_data['dwell']
             trace = go.Scatter(x=x, y=y, name='DwellFit',
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
 
+        fig.update_layout(width=480)
+        sleep(1)
         return fig
 
     def get_all_fits(self) -> dict:

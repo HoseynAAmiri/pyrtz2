@@ -64,7 +64,8 @@ def render(app: Dash) -> html.Div:
         id=ids.FIG_HOLDER,
         style={
             'display': 'flex',
-            'width': '100%',
+            'width': '98%',
+            'height': '90%',
         },
         children=[
             fig.render(id=ids.CONTACT_FIG,
