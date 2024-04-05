@@ -337,10 +337,8 @@ class Curve:
 
         x_line = x[self.contact_index]
         y_line = y[self.contact_index]
-        fig.add_shape(type='line', x0=x_line, x1=x_line, y0=min(y),
-                      y1=max(y), line=dict(color='red', width=1.2))
-        fig.add_shape(type='line', y0=y_line, y1=y_line, x0=min(x),
-                      x1=max(x), line=dict(color='red', width=1.2))
+        fig.add_vline(x=x_line, line=dict(color='red', width=1.2))
+        fig.add_hline(y=y_line, line=dict(color='red', width=1.2))
 
         if hasattr(self, 'fits_data'):
             x, y = self.fits_data['indent']

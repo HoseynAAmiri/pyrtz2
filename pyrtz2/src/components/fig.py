@@ -1,6 +1,5 @@
 from dash import dcc
 
-import numpy as np
 import plotly.graph_objects as go
 
 
