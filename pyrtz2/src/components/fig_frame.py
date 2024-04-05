@@ -41,7 +41,7 @@ def render(app: Dash) -> html.Div:
         curve.set_contact_index(cp)
         curve.get_figs_data(vd=vd, adjust=adjust)
         contact_fig = curve.get_contact_fig_plot()
-        forcetime_fig = curve.get_dwell_relax_fig_plot()
+        forcetime_fig = curve.get_dwell_fig_plot()
 
         return contact_fig, forcetime_fig
 

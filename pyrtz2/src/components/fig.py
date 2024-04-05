@@ -35,13 +35,13 @@ def make_fig(title: str, xaxis: str) -> go.Figure:
         margin=dict(t=50, b=50, l=50, r=50),
         showlegend=False,
         transition={'duration': 500},
-        yaxis2=dict(
-            title=r"$Indentation \text{ (m)}$",
-            overlaying='y',
-            side='right',
-            tickprefix=r"$",
-            ticksuffix=r"$",
-        )
+        # yaxis2=dict(
+        #     title=r"$Indentation \text{ (m)}$",
+        #     overlaying='y',
+        #     side='right',
+        #     tickprefix=r"$",
+        #     ticksuffix=r"$",
+        # )
     )
 
     fig.update_annotations(yshift=10)
@@ -119,4 +119,3 @@ def update_contact_line(cp: int, fig: dict | go.Figure) -> go.Figure:
     fig.layout['title']['text'] = fr"$\text{{Selected Contact Point: {cp}}}$"
 
     return fig
-
