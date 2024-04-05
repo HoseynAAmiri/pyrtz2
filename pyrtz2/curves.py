@@ -46,7 +46,7 @@ class Curve:
     dwell_param: list[float]
     dwell_R2: float
     contact_fig: go.Figure
-    dwell_relax_fig: go.Figure
+    dwell_fig: go.Figure
 
     def __init__(
             self,
@@ -116,11 +116,6 @@ class Curve:
 
     def get_dwell(self) -> pd.DataFrame:
         return self.get_data_between(self.dwell_range[0], self.dwell_range[1])
-
-    def get_relaxation(self) -> pd.DataFrame:
-        dwell = self.get_dwell()
-        max_ind = dwell['ind'].argmax()
-        return dwell.iloc[:max_ind].reset_index(drop=True)
 
     def get_repulsion(self) -> pd.DataFrame:
         dwell = self.get_dwell()
@@ -194,10 +189,6 @@ class Curve:
         dwell = self.get_dwell()
         return biexponential_fit(dwell['t'], dwell['f'])
 
-    def fit_relaxation(self) -> tuple:
-        relaxation = self.get_relaxation()
-        return biexponential_fit(relaxation['t'], relaxation['ind'])
-
     def get_figs_data(self, vd: bool = False, adjust: bool = False) -> None:
         if vd or adjust:
             self.restore_data()
@@ -207,14 +198,11 @@ class Curve:
             self.adjust_to_contact()
 
         approach = self.get_approach()
-
         dwell = self.get_dwell()
-        relaxation = self.get_relaxation()
 
         self.figs_data = {
             'approach': (approach['ind'].to_numpy(), approach['f'].to_numpy()),
-            'dwell': (dwell['t'].to_numpy(), dwell['f'].to_numpy()),
-            'relaxation': (relaxation['t'].to_numpy(), relaxation['ind'].to_numpy()),
+            'dwell': (dwell['t'].to_numpy(), dwell['f'].to_numpy())
         }
 
     def get_contact_fig_plot(self) -> go.Figure:
@@ -245,9 +233,9 @@ class Curve:
         self.contact_fig = fig
         return fig
 
-    def get_dwell_relax_fig_plot(self) -> go.Figure:
+    def get_dwell_fig_plot(self) -> go.Figure:
         fig = make_fig(
-            title=r"$\text{Dwell and Relaxation}$",
+            title=r"$\text{Dwell}$",
             xaxis=r"$Time \text{ (s)}$"
         )
 
@@ -262,21 +250,7 @@ class Curve:
 
         fig.add_trace(trace)
 
-        '''
-        x, y = self.figs_data['relaxation']
-        trace = go.Scattergl(
-            x=x,
-            y=y,
-            yaxis='y2',
-            name='Relaxation',
-            mode='markers',
-            marker={'color': 'blue'},
-        )
-
-        fig.add_trace(trace)
-        '''
-
-        self.dwell_relax_fig = fig
+        self.dwell_fig = fig
         return fig
 
     def get_fits_data(self, probe_diameter: float, ind: float | list[float]) -> None:
@@ -301,15 +275,11 @@ class Curve:
         dwell_x_pred = dwell['t'].to_numpy()
         self.dwell_param, self.dwell_R2, dwell_y_pred = self.fit_dwell()
 
-        relaxation = self.get_relaxation()
-        relaxation_x_pred = relaxation['t'].to_numpy()
-        self.relaxation_param, self.relaxation_R2, relaxation_y_pred = self.fit_relaxation()
-
         self.fits_data = {
             'indent': (indent_x_pred, indent_y_pred),
             'hertzian': (hertzian_x_pred, hertzian_y_pred),
             'dwell': (dwell_x_pred, dwell_y_pred),
-            'relaxation': (relaxation_x_pred, relaxation_y_pred),
+
         }
 
     def add_contact_fit(self) -> go.Figure:
@@ -338,7 +308,7 @@ class Curve:
 
         return self.contact_fig
 
-    def add_dwell_relax_fit(self) -> go.Figure:
+    def add_dwell_fit(self) -> go.Figure:
         x, y = self.fits_data['dwell']
 
         trace = go.Scattergl(
@@ -351,24 +321,9 @@ class Curve:
                 'width': 3,
             },
         )
-        self.dwell_relax_fig.add_trace(trace)
+        self.dwell_fig.add_trace(trace)
 
-        '''
-        x, y = self.fits_data['relaxation']
-        trace = go.Scattergl(
-            x=x,
-            y=y,
-            yaxis='y2',
-            name='RelaxationFit',
-            mode='lines',
-            line={
-                'color': 'green',
-                'width': 3,
-            },
-        )
-        self.dwell_relax_fig.add_trace(trace)
-        '''
-        return self.dwell_relax_fig
+        return self.dwell_fig
 
     def get_contact_fig_pdf(self) -> go.Figure:
         title = fr"$\text{{Selected Contact Point: {self.contact_index}}}$"
@@ -399,8 +354,8 @@ class Curve:
 
         return fig
 
-    def get_dwell_relax_fig_pdf(self) -> go.Figure:
-        title = r"$\text{Dwell and Relaxation}$"
+    def get_dwell_fig_pdf(self) -> go.Figure:
+        title = r"$\text{Dwell}$"
         xaxis = r"$Time \text{ (s)}$"
         fig = make_fig(title, xaxis)
 
@@ -424,23 +379,13 @@ class Curve:
                 ticksuffix=r"$",
             )
         )
-        '''
-        x, y = self.figs_data['relaxation']
-        trace = go.Scatter(x=x, y=y, name='Relaxation',
-                           marker_color='blue', yaxis='y2')
-        fig.add_trace(trace)
-        '''
+
         if hasattr(self, 'fits_data'):
             x, y = self.fits_data['dwell']
             trace = go.Scatter(x=x, y=y, name='DwellFit',
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
-            '''
-            x, y = self.fits_data['relaxation']
-            trace = go.Scatter(x=x, y=y, yaxis='y2', name='RelaxationFit',
-                               mode='lines', line={'color': 'green', 'width': 3})
-            fig.add_trace(trace)
-            '''
+
         return fig
 
     def get_all_fits(self) -> dict:
@@ -466,14 +411,6 @@ class Curve:
             'dwell_tauMin': min(self.dwell_param[1], self.dwell_param[2]),
             'dwell_yf': self.dwell_param[3],
             'dwell_R2': self.dwell_R2,
-
-            # 'relaxation_c': self.relaxation_param[0],
-            # 'relaxation_tau1': self.relaxation_param[1],
-            # 'relaxation_tau2': self.relaxation_param[2],
-            # 'relaxation_tauMax': max(self.relaxation_param[1], self.relaxation_param[2]),
-            # 'relaxation_tauMin': min(self.relaxation_param[1], self.relaxation_param[2]),
-            # 'relaxation_yf': self.relaxation_param[3],
-            # 'relaxation_R2': self.relaxation_R2
         }
 
         return fit_results_dict
@@ -596,10 +533,10 @@ class CurveSet:
                 contact_fit_fig.to_image(format='pdf'))
             merger.append(contact_fit_fig_pdf)
 
-            dwell_relaxation_fit_fig = curve.get_dwell_relax_fig_pdf()
-            dwell_relaxation_fit_fig.update_layout(title={'text': title})
-            dwell_relaxation_fit_fig_pdf = io.BytesIO(
-                dwell_relaxation_fit_fig.to_image(format='pdf'))
-            merger.append(dwell_relaxation_fit_fig_pdf)
+            dwell_fit_fig = curve.get_dwell_fig_pdf()
+            dwell_fit_fig.update_layout(title={'text': title})
+            dwell_fit_fig_pdf = io.BytesIO(
+                dwell_fit_fig.to_image(format='pdf'))
+            merger.append(dwell_fit_fig_pdf)
 
         return merger
