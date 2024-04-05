@@ -42,15 +42,6 @@ def render(app: Dash) -> html.Div:
         curve.get_figs_data(vd=vd, adjust=adjust)
         contact_fig = curve.get_contact_fig_plot()
         forcetime_fig = curve.get_dwell_relax_fig_plot()
-        if not trigger_id in (ids.VD_ANNOTATIONS, ids.CP_ANNOTATIONS):
-            contact_fig.update_layout(
-                xaxis={'autorange': True},
-                yaxis={'autorange': True},
-            )
-            forcetime_fig.update_layout(
-                xaxis={'autorange': True},
-                yaxis={'autorange': True},
-            )
 
         return contact_fig, forcetime_fig
 

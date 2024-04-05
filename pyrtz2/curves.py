@@ -45,8 +45,6 @@ class Curve:
     hertzian_R2: float
     dwell_param: list[float]
     dwell_R2: float
-    relaxation_param: list[float]
-    relaxation_R2: float
     contact_fig: go.Figure
     dwell_relax_fig: go.Figure
 
@@ -253,14 +251,6 @@ class Curve:
             xaxis=r"$Time \text{ (s)}$"
         )
 
-        fig.update_layout(
-            yaxis2=dict(
-                title=r"$Indentation \text{ (m)}$",
-                overlaying='y',
-                side='right'
-            )
-        )
-
         x, y = self.figs_data['dwell']
         trace = go.Scattergl(
             x=x,
@@ -272,6 +262,7 @@ class Curve:
 
         fig.add_trace(trace)
 
+        '''
         x, y = self.figs_data['relaxation']
         trace = go.Scattergl(
             x=x,
@@ -283,6 +274,7 @@ class Curve:
         )
 
         fig.add_trace(trace)
+        '''
 
         self.dwell_relax_fig = fig
         return fig
@@ -361,6 +353,7 @@ class Curve:
         )
         self.dwell_relax_fig.add_trace(trace)
 
+        '''
         x, y = self.fits_data['relaxation']
         trace = go.Scattergl(
             x=x,
@@ -374,7 +367,7 @@ class Curve:
             },
         )
         self.dwell_relax_fig.add_trace(trace)
-
+        '''
         return self.dwell_relax_fig
 
     def get_contact_fig_pdf(self) -> go.Figure:
@@ -431,23 +424,23 @@ class Curve:
                 ticksuffix=r"$",
             )
         )
-
+        '''
         x, y = self.figs_data['relaxation']
         trace = go.Scatter(x=x, y=y, name='Relaxation',
                            marker_color='blue', yaxis='y2')
         fig.add_trace(trace)
-
+        '''
         if hasattr(self, 'fits_data'):
             x, y = self.fits_data['dwell']
             trace = go.Scatter(x=x, y=y, name='DwellFit',
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
-
+            '''
             x, y = self.fits_data['relaxation']
             trace = go.Scatter(x=x, y=y, yaxis='y2', name='RelaxationFit',
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
-
+            '''
         return fig
 
     def get_all_fits(self) -> dict:
@@ -474,13 +467,13 @@ class Curve:
             'dwell_yf': self.dwell_param[3],
             'dwell_R2': self.dwell_R2,
 
-            'relaxation_c': self.relaxation_param[0],
-            'relaxation_tau1': self.relaxation_param[1],
-            'relaxation_tau2': self.relaxation_param[2],
-            'relaxation_tauMax': max(self.relaxation_param[1], self.relaxation_param[2]),
-            'relaxation_tauMin': min(self.relaxation_param[1], self.relaxation_param[2]),
-            'relaxation_yf': self.relaxation_param[3],
-            'relaxation_R2': self.relaxation_R2
+            # 'relaxation_c': self.relaxation_param[0],
+            # 'relaxation_tau1': self.relaxation_param[1],
+            # 'relaxation_tau2': self.relaxation_param[2],
+            # 'relaxation_tauMax': max(self.relaxation_param[1], self.relaxation_param[2]),
+            # 'relaxation_tauMin': min(self.relaxation_param[1], self.relaxation_param[2]),
+            # 'relaxation_yf': self.relaxation_param[3],
+            # 'relaxation_R2': self.relaxation_R2
         }
 
         return fit_results_dict
