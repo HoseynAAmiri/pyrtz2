@@ -86,7 +86,6 @@ class Curve:
             raise Exception('Contact index has not been set.')
 
     def get_contact_values(self) -> pd.Series:
-        self.check_contact()
         if self.contact_values is None:
             self.contact_values = self.data.iloc[self.contact_index].copy()
         return self.contact_values

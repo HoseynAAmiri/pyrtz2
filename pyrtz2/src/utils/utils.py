@@ -82,9 +82,9 @@ def group_values_by_keys(original_dict: dict) -> dict:
             new_dict[new_key].append(value)
     return new_dict
 
-
-def tif_to_base64(tif_path):
-    img = Image.open(tif_path)
+def load_image(image_path:str) -> str:
+    img = Image.open(image_path)
     buffer = io.BytesIO()
-    img.save(buffer, format="PNG")  # can be changeg to "JPEG"
-    return base64.b64encode(buffer.getvalue()).decode()
+    img.save(buffer, format="JPEG")  # can be changed to "PNG"
+    encoded_image = base64.b64encode(buffer.getvalue()).decode()
+    return f"data:image/jpeg;base64,{encoded_image}"

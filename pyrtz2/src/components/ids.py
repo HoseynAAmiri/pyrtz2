@@ -4,7 +4,6 @@ PROBE_DIAMETER = "probe-diameter"
 LOAD_EXPERIMENT = "load-experiment"
 LOAD_OUTPUT = "load-output"
 EXPERIMENT = "experiment"
-EXPERIMENT_PROCESSED = "experiment-processed"
 IMAGES = "images"
 
 CURVE_DROPDOWN = "curve-dropdown"

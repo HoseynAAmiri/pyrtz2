@@ -2,7 +2,7 @@ from dash import Dash, html
 from dash.dependencies import Input, Output
 
 from . import ids
-from ..utils.utils import load
+from ..utils.utils import load, load_image
 
 
 def render(app: Dash) -> html.Div:
@@ -14,7 +14,7 @@ def render(app: Dash) -> html.Div:
         prevent_initial_call=True
     )
     def update_image_frame(curve_value, encoded_images):
-        if not encoded_images:
+        if not encoded_images or not curve_value:
             return ''
 
         images: dict = load(encoded_images)
@@ -24,8 +24,8 @@ def render(app: Dash) -> html.Div:
 
         # THIS ONLY SHOWS THE FIRST IMAGE IF THERE IS ONE
         if images.get(new_key):
-            image = images[new_key][0]
-            image_src = f'data:image/png;base64,{image}'
+            image_path = images[new_key][0]
+            image_src = load_image(image_path)
             return image_src
         else:
             return ''

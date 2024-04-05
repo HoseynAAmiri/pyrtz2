@@ -55,32 +55,21 @@ def render(app: Dash) -> html.Div:
             return no_update, json.dumps(vd_annotations)
 
     @app.callback(
-        [Output(ids.CONTACT_FIG, 'figure', allow_duplicate=True),
-         Output(ids.FORCETIME_FIG, 'figure', allow_duplicate=True),],
-        [Input(ids.ADJUST_CHECKLIST, 'value'),
-         Input(ids.CP_ANNOTATIONS, 'data')],
-        [State(ids.CURVE_DROPDOWN, 'value'),
+        Output(ids.CONTACT_FIG, 'figure', allow_duplicate=True),
+        [Input(ids.CP_ANNOTATIONS, 'data')],
+        [State(ids.ADJUST_CHECKLIST, 'value'),
+         State(ids.CURVE_DROPDOWN, 'value'),
          State(ids.CONTACT_FIG, 'figure'),
-         State(ids.FORCETIME_FIG, 'figure'),
          State(ids.VD_CHECKLIST, 'value')],
         prevent_initial_call=True
     )
-    def set_contact(adjust, cp_data, curve_value, contact_fig_dict, forcetime_fig_dict, vd):
-        if not curve_value or vd:
+    def set_contact(cp_data, adjust, curve_value, contact_fig_dict, vd):
+        if not curve_value or vd or adjust:
             raise PreventUpdate
 
         cp = get_current_annotation(curve_value, cp_data)
-
-        contact_fig = fig.get_fig(contact_fig_dict)
-        if adjust:
-            forcetime_fig = fig.get_fig(forcetime_fig_dict)
-            contact_fig = fig.adjust_to_contact(cp, contact_fig)
-            forcetime_fig = fig.adjust_to_contact(cp, forcetime_fig)
-            contact_fig = fig.update_contact_line(cp, contact_fig)
-            return contact_fig, forcetime_fig
-        else:
-            contact_fig = fig.update_contact_line(cp, contact_fig)
-            return contact_fig, no_update
+        contact_fig = fig.update_contact_line(cp, contact_fig_dict)
+        return contact_fig
 
     @app.callback(
         [Output(ids.CP_ANNOTATIONS, 'data', allow_duplicate=True),

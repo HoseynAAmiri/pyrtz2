@@ -87,7 +87,6 @@ def render(app: Dash) -> html.Div:
                 }
             ),
             experiment_loader.render(app),
-            dcc.Store(id=ids.EXPERIMENT_PROCESSED),
             image_loader.render(app),
             html.Div(
                 children="Enter experiment info and then click load.",
