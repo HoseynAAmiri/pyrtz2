@@ -19,6 +19,6 @@ app.run()
 ```
 
 These options are under development:
-> Show Fits
-> Download Image Data
-> Download Experiment
+- Show Fits
+- Download Image Data
+- Download Experiment
