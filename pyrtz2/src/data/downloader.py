@@ -56,7 +56,7 @@ def render(app: Dash) -> dcc.Download:
             experiment_processed, df = process_experiment(
                 experiment, cp_data, vd_data, indentation)
             exp_name = exp_output.split('\'')[1]
-            return dcc.send_data_frame(df.to_csv, filename=f"{exp_name}_its.csv"), dump(experiment_processed), no_update, no_update
+            return dcc.send_data_frame(df.to_csv, filename=f"{exp_name}_fits.csv"), dump(experiment_processed), no_update, no_update
 
         return no_update, no_update, no_update, "Unable to proceed without indentation!"
 
