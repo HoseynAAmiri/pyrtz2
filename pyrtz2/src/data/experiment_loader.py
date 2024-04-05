@@ -10,9 +10,7 @@ from ..utils.utils import dump, make_json
 
 def render(app: Dash) -> dcc.Store:
     @app.callback(
-        [Output(ids.EXPERIMENT, 'data', allow_duplicate=True),
-         Output(ids.EXPERIMENT_PROCESSED, 'data', allow_duplicate=True),
-         Output(ids.CP_ANNOTATIONS, 'data', allow_duplicate=True),
+        [Output(ids.EXPERIMENT, 'data', allow_duplicate=True),Output(ids.CP_ANNOTATIONS, 'data', allow_duplicate=True),
          Output(ids.VD_ANNOTATIONS, 'data', allow_duplicate=True)],
         [Input(ids.LOAD_EXPERIMENT, 'n_clicks')],
         [State(ids.EXPERIMENT_PATH, 'value'),
@@ -31,9 +29,17 @@ def render(app: Dash) -> dcc.Store:
         path = os.path.dirname(os.path.normpath(experiment_path))
         label_list = [label.strip() for label in labels.split(';')]
         experiment = AFM(path, exp_name, label_list, float(probe_diameter))
-
+        experiment.experiment.reduce_data()
         cp_data = make_json(experiment.curve_keys, 0)
         vd_data = make_json(experiment.curve_keys, False)
-        return dump(experiment), dump(experiment), cp_data, vd_data
+        return dump(experiment), cp_data, vd_data
+    
+    @app.callback(
+        Output(ids.EXPERIMENT_PROCESSED, 'data', allow_duplicate=True),
+        Input(ids.EXPERIMENT, 'data'),
+        prevent_initial_call=True
+    )
+    def copy_to_processed(encoded_experiment):
+        return encoded_experiment
 
     return dcc.Store(id=ids.EXPERIMENT)

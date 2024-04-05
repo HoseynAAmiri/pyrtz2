@@ -16,7 +16,7 @@ from ..utils.utils import (
 def render(app: Dash) -> dcc.Store:
     @app.callback(
         Output(ids.IMAGES, 'data', allow_duplicate=True),
-        [Input(ids.CURVE_DROPDOWN, 'options')],
+        [Input(ids.EXPERIMENT_PROCESSED, 'data')],
         [State(ids.EXPERIMENT_PATH, 'value'),
          State(ids.EXPERIMENT_LABELS, 'value')],
         prevent_initial_call=True

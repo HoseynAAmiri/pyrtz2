@@ -6,10 +6,9 @@ from .src.components.layout import create_layout
 
 def run() -> None:
     app = Dash(__name__, external_stylesheets=[BOOTSTRAP])
-    server = app.server
     app.title = "AFM Curve Analysis"
     app.layout = create_layout(app)
-    app.run(debug=False, dev_tools_ui=False)
+    app.run(debug=False)
 
 
 if __name__ == "__main__":
