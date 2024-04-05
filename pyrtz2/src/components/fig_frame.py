@@ -3,34 +3,10 @@ from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 
 import json
-from typing import Protocol
-import pandas as pd
-
+import os
 from . import ids, fig
-from ..utils.utils import load, get_current_annotation
-
-
-class Curve(Protocol):
-    data: pd.DataFrame
-    contact_index: int
-
-    def set_contact_index(self, index: int = 0) -> None:
-        ...
-
-    def correct_virtual_defl(self) -> None:
-        ...
-
-    def get_approach(self) -> pd.DataFrame:
-        ...
-
-
-class Experiment(Protocol):
-    def __getitem__(self, index: tuple[str, ...]) -> Curve:
-        ...
-
-
-class AFM(Protocol):
-    experiment: Experiment
+from ..utils.utils import get_current_annotation
+from ...asylum import load_ibw
 
 
 def render(app: Dash) -> html.Div:
@@ -41,62 +17,31 @@ def render(app: Dash) -> html.Div:
          Input(ids.ADJUST_CHECKLIST, 'value'),
          Input(ids.VD_ANNOTATIONS, 'data'),
          Input(ids.CP_ANNOTATIONS, 'data')],
-        [State(ids.EXPERIMENT, 'data'),
+        [State(ids.EXPERIMENT_PATH, 'value'),
          State(ids.CONTACT_FIG, 'figure'),
          State(ids.FORCETIME_FIG, 'figure'),
          ],
         prevent_initial_call=True
     )
-    def show_data(curve_value, adjust, vd_data, cp_data, encoded_experiment, contact_fig, forcetime_fig):
+    def show_data(curve_value, adjust, vd_data, cp_data, experiment_path, contact_fig, forcetime_fig):
         ctx = callback_context
         if not ctx.triggered or not curve_value or not vd_data or not cp_data:
             raise PreventUpdate
         trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
         vd = get_current_annotation(curve_value, vd_data)
-        if trigger_id == ids.CP_ANNOTATIONS and not vd:
+        if trigger_id == ids.CP_ANNOTATIONS and not vd and not adjust:
             raise PreventUpdate
-
-        if trigger_id == ids.ADJUST_CHECKLIST and not vd:
-            raise PreventUpdate
-
-        key = eval(curve_value)['key']
+        print('raft too')
+        name = eval(curve_value)['name'] + ".ibw"
+        file_name = os.path.join(experiment_path, name)
+        curve = load_ibw(file_name)
+        curve.reduce_data()
         cp = get_current_annotation(curve_value, cp_data)
-        experiment: AFM = load(encoded_experiment)
-        curve = experiment.experiment[key]
         curve.set_contact_index(cp)
-
-        if curve.contact_index > 2 and vd:
-            curve.correct_virtual_defl()
-
-        approach = curve.get_approach()
-        curve_data = curve.data.copy()
-        contact_fig = fig.get_fig(contact_fig)
-        contact_fig = fig.update_fig(
-            contact_fig,
-            approach['ind'],
-            approach['f'],
-            color='blue',
-            mode='markers',
-            hover=True,
-        )
-
-        forcetime_fig = fig.get_fig(forcetime_fig)
-        forcetime_fig = fig.update_fig(
-            forcetime_fig,
-            curve_data['t'],
-            curve_data['f'],
-            mode='lines',
-            color='red',
-            hover=False,
-        )
-
-        if adjust:
-            contact_fig = fig.adjust_to_contact(cp, contact_fig)
-            forcetime_fig = fig.adjust_to_contact(cp, forcetime_fig)
-
-        contact_fig = fig.update_contact_line(cp, contact_fig)
-
+        curve.get_figs_data(vd=vd, adjust=adjust)
+        contact_fig = curve.get_contact_fig_plot()
+        forcetime_fig = curve.get_dwell_relax_fig_plot()
         if not trigger_id in (ids.VD_ANNOTATIONS, ids.CP_ANNOTATIONS):
             contact_fig.update_layout(
                 xaxis={'autorange': True},

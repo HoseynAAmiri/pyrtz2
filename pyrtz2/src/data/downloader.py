@@ -38,7 +38,7 @@ def render(app: Dash) -> dcc.Download:
 
     @app.callback(
         [Output(ids.DOWNLOAD, 'data', allow_duplicate=True),
-         Output(ids.EXPERIMENT_PROCESSED, 'data', allow_duplicate=True),
+         Output(ids.EXPERIMENT, 'data', allow_duplicate=True),
          Output(ids.DOWNLOAD_FITS, 'children', allow_duplicate=True),
          Output(ids.INDENTATION, 'value')],
         [Input(ids.DOWNLOAD_FITS, "n_clicks")],
@@ -64,12 +64,12 @@ def render(app: Dash) -> dcc.Download:
         [Output(ids.DOWNLOAD, 'data', allow_duplicate=True),
          Output(ids.DOWNLOAD_CURVES, 'children')],
         [Input(ids.DOWNLOAD_CURVES, "n_clicks")],
-        [State(ids.EXPERIMENT_PROCESSED, 'data'),
+        [State(ids.EXPERIMENT, 'data'),
          State(ids.LOAD_OUTPUT, 'children')],
         prevent_initial_call=True
     )
-    def download_curves_pdf(_, encoded_experiment_processed, exp_output):
-        experiment_processed = load(encoded_experiment_processed)
+    def download_curves_pdf(_, encoded_experiment, exp_output):
+        experiment_processed = load(encoded_experiment)
         exp_name = exp_output.split('\'')[1]
         pdf_src = get_pdf(experiment_processed)
 

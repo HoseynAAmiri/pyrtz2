@@ -33,13 +33,5 @@ def render(app: Dash) -> dcc.Store:
         cp_data = make_json(experiment.curve_keys, 0)
         vd_data = make_json(experiment.curve_keys, False)
         return dump(experiment), cp_data, vd_data
-    
-    @app.callback(
-        Output(ids.EXPERIMENT_PROCESSED, 'data', allow_duplicate=True),
-        Input(ids.EXPERIMENT, 'data'),
-        prevent_initial_call=True
-    )
-    def copy_to_processed(encoded_experiment):
-        return encoded_experiment
 
     return dcc.Store(id=ids.EXPERIMENT)
