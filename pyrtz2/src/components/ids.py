@@ -2,7 +2,7 @@ EXPERIMENT_PATH = "experiment-path"
 EXPERIMENT_LABELS = "experiment-labels"
 PROBE_DIAMETER = "probe-diameter"
 LOAD_EXPERIMENT = "load-experiment"
-LOAD_OUTPUT = "load-output"
+LOG = "load-output"
 EXPERIMENT = "experiment"
 IMAGES = "images"
 
