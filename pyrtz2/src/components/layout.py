@@ -17,7 +17,6 @@ def create_layout(app: Dash) -> html.Div:
             html.Hr(),
             dcc.Loading(
                 id=ids.LOAD_ANIMATION,
-                # There are different types like 'graph', 'cube', 'circle', 'dot', and 'default'
                 type="default",
                 children=html.Div(
                     className="file-reader",
@@ -25,6 +24,10 @@ def create_layout(app: Dash) -> html.Div:
                         loader.render(app),
                     ],
                 ),
+            ),
+            html.Div(
+                children="Enter experiment info and then click load.",
+                id=ids.LOG
             ),
             html.Hr(),
             html.Div(

@@ -16,10 +16,10 @@ def render(app: Dash) -> html.Div:
     @app.callback(
         [Output(ids.CURVE_DROPDOWN, 'options'),
          Output(ids.CURVE_DROPDOWN, 'value', allow_duplicate=True),
-         Output(ids.LOAD_OUTPUT, 'children', allow_duplicate=True)],
+         Output(ids.LOG, 'children', allow_duplicate=True)],
         [Input(ids.EXPERIMENT, 'data')],
         [State(ids.EXPERIMENT_LABELS, 'value'),
-         State(ids.LOAD_OUTPUT, 'children')],
+         State(ids.LOG, 'children')],
         prevent_initial_call=True
     )
     def update_curve_dropdown(encoded_experiment, labels, exp_output):
@@ -54,7 +54,7 @@ def render(app: Dash) -> html.Div:
             options.append({'label': dropdown_label, 'value': dropdown_value})
 
         exp_name = exp_output.split('\'')[1]
-        return options, options[0]['value'], html.Div(f"Experiment '{exp_name}' loaded.", id=ids.LOAD_OUTPUT)
+        return options, options[0]['value'], html.Div(f"Experiment '{exp_name}' loaded.", id=ids.LOG)
 
     @app.callback(
         Output(ids.CURVE_DROPDOWN, 'value'),

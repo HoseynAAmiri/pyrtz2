@@ -60,17 +60,31 @@ def load_ibw(filename: str) -> curves.Curve:
     t = np.arange(data.shape[0]) * sample_time
     data.loc[:, 't'] = t
 
-    dwell_time = float(notes['DwellTime'])
+    if notes.get('DwellTime'):
+        dwell_time = float(notes['DwellTime'])
+    else:
+        print("Missing DwellTime")
+        dwell_time = 0.0
+
     dwell_start_time = data['t'].loc[trigger_index]
     dwell_end_time = dwell_start_time + dwell_time
 
     dwell_end_index = int(np.argmin(np.abs(data.loc[:, 't'] - dwell_end_time)))
     dwell_range = [trigger_index, dwell_end_index]
-    k = float(notes['SpringConstant'])
+
+    if notes.get('SpringConstant'):
+        k = float(notes['SpringConstant'])
+    else:
+        print("Missing SpringConstant")
+        k = 0.0
 
     data.loc[:, 'f'] = data.loc[:, 'defl'] * k
 
-    invOLS = float(notes['InvOLS'])
+    if notes.get('InvOLS'):
+        invOLS = float(notes['InvOLS'])
+    else:
+        print("Missing InvOLS")
+        invOLS = 0.0
 
     this_curve = curves.Curve(
         filename=filename.split(os.path.sep)[-1],
@@ -131,8 +145,11 @@ def load_curveset_ibw(folder: str, ident_labels: list[str]) -> curves.CurveSet:
         idents = tuple([m.group(label) for label in ident_labels])
         filename = m.group(0)
         filepath = os.path.join(folder, filename)
+
+        print(f"   > Reading {filename}")
         curve_dict[idents] = load_ibw(filepath)
 
     curveset = curves.CurveSet(
         ident_labels=ident_labels, curve_dict=curve_dict)
+    print("   > Experiment Loaded.")
     return curveset
