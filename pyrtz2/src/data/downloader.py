@@ -12,7 +12,7 @@ def render(app: Dash) -> dcc.Download:
         Output(ids.DOWNLOAD, 'data', allow_duplicate=True),
         [Input(ids.DOWNLOAD_ANNOTATIONS, 'n_clicks')],
         [State(ids.CP_ANNOTATIONS, 'data'),
-         State(ids.LOAD_OUTPUT, 'children')],
+         State(ids.LOG, 'children')],
         prevent_initial_call=True
     )
     def download_cp(_, cp_data, exp_output):
@@ -26,7 +26,7 @@ def render(app: Dash) -> dcc.Download:
         Output(ids.DOWNLOAD, 'data'),
         [Input(ids.DOWNLOAD_ANNOTATIONS, 'n_clicks')],
         [State(ids.VD_ANNOTATIONS, 'data'),
-         State(ids.LOAD_OUTPUT, 'children')],
+         State(ids.LOG, 'children')],
         prevent_initial_call=True
     )
     def download_vd(_, vd_data, exp_output):
@@ -46,7 +46,7 @@ def render(app: Dash) -> dcc.Download:
          State(ids.CP_ANNOTATIONS, 'data'),
          State(ids.VD_ANNOTATIONS, 'data'),
          State(ids.INDENTATION, 'value'),
-         State(ids.LOAD_OUTPUT, 'children')],
+         State(ids.LOG, 'children')],
         prevent_initial_call=True
     )
     def download_fits_csv(_, encoded_experiment, cp_data, vd_data, indentation, exp_output):
@@ -65,7 +65,7 @@ def render(app: Dash) -> dcc.Download:
          Output(ids.DOWNLOAD_CURVES, 'children')],
         [Input(ids.DOWNLOAD_CURVES, "n_clicks")],
         [State(ids.EXPERIMENT, 'data'),
-         State(ids.LOAD_OUTPUT, 'children')],
+         State(ids.LOG, 'children')],
         prevent_initial_call=True
     )
     def download_curves_pdf(_, encoded_experiment, exp_output):

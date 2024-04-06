@@ -351,7 +351,7 @@ class Curve:
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
 
-        fig.update_layout(width=480)
+        fig.update_layout(width=480, height=400)
         sleep(1)
         return fig
 
@@ -371,7 +371,7 @@ class Curve:
                                mode='lines', line={'color': 'green', 'width': 3})
             fig.add_trace(trace)
 
-        fig.update_layout(width=480)
+        fig.update_layout(width=480, height=400)
         sleep(1)
         return fig
 
