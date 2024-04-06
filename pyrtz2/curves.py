@@ -1,5 +1,4 @@
 from plotly import graph_objs as go
-import plotly.express as px
 
 import PyPDF2 as pdf
 import pickle
