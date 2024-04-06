@@ -30,15 +30,32 @@ def render(app: Dash) -> html.Div:
         else:
             return ''
 
+    @app.callback(
+        Output('click-data', 'children'),
+        Input('image-graph', 'clickData')
+    )
+    def store_cell_position(clickData):
+        if clickData is None:
+            return []
+        else:
+            # Extract coordinates from the clickData
+            x, y = clickData['points'][0]['x'], clickData['points'][0]['y']
+            return [x, y]
+
     return html.Div(
         className='image',
         children=[
             html.Img(
                 id=ids.IMAGE_FRAME,
-                style={'display': 'flex',
-                       'margin': '10px auto',
-                       'height': '250px'
-                       }
+                style={
+                    'display': 'flex',
+                    'height': '100%',
+                    'margin': '10px auto',
+                }
             )
         ],
+        style={
+            'height': '220px',
+            'width': 'auto',
+        },
     )
