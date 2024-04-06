@@ -13,7 +13,7 @@ from ..data import (
 def render(app: Dash) -> html.Div:
 
     @app.callback(
-        Output(ids.LOAD_OUTPUT, 'children'),
+        Output(ids.LOG, 'children'),
         Input(ids.LOAD_EXPERIMENT, 'n_clicks'),
         [State(ids.EXPERIMENT_PATH, 'value'),
          State(ids.EXPERIMENT_LABELS, 'value'),
@@ -22,13 +22,13 @@ def render(app: Dash) -> html.Div:
     )
     def update_output(_, experiment_path, labels, probe_diameter):
         if not experiment_path or not os.path.exists(experiment_path) or not os.path.isdir(experiment_path):
-            return html.Div("Invalid directory path.", id=ids.LOAD_OUTPUT)
+            return html.Div("Invalid directory path.", id=ids.LOG)
 
         if not labels or not probe_diameter:
-            return html.Div("Labels or probe diameter cannot be empty.", id=ids.LOAD_OUTPUT)
+            return html.Div("Labels or probe diameter cannot be empty.", id=ids.LOG)
 
         exp_name = os.path.basename(os.path.normpath(experiment_path))
-        return html.Div(f"Experiment '{exp_name}' loading.", id=ids.LOAD_OUTPUT)
+        return html.Div(f"Experiment '{exp_name}' loading.", id=ids.LOG)
 
     @app.callback(
         Output(ids.EXPERIMENT_PATH, 'style'),
@@ -88,10 +88,6 @@ def render(app: Dash) -> html.Div:
             ),
             experiment_loader.render(app),
             image_loader.render(app),
-            html.Div(
-                children="Enter experiment info and then click load.",
-                id=ids.LOAD_OUTPUT
-            )
         ],
         className='experiment-loader',
     )
