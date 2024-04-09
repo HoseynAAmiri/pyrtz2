@@ -17,6 +17,9 @@ Please see the example folder. To run the HTML dash app interface simply use:
 from pyrtz2 import app
 app.run()
 ```
+You should see this interface:
+
+![pyrtz2.app]()
 
 These options are under development:
 - Show Fits
