@@ -29,7 +29,7 @@ def render(app: Dash) -> html.Div:
             return image_src
         else:
             return ''
-
+    '''
     @app.callback(
         Output('click-data', 'children'),
         Input('image-graph', 'clickData')
@@ -41,7 +41,7 @@ def render(app: Dash) -> html.Div:
             # Extract coordinates from the clickData
             x, y = clickData['points'][0]['x'], clickData['points'][0]['y']
             return [x, y]
-
+    '''
     return html.Div(
         className='image',
         children=[
