@@ -107,7 +107,7 @@ def biexponential_fit(x, y, bound=False):
             return biexponential(t, y[0], c, tau1, tau2, y[-1])
 
         bounds = ([0, 0, 0], [1, np.inf, np.inf])
-        p0 = [0.5, 0.1, 1]
+        p0 = [0.4, 1, 0.1]
         popt, _ = curve_fit(bnd_wrapper, x, y,
                             bounds=bounds, p0=p0, jac='3-point')
         args = [y[0], *popt, y[-1]]
@@ -115,7 +115,7 @@ def biexponential_fit(x, y, bound=False):
         def ubnd_wrapper(t, c, tau1, tau2, y_f):
             return biexponential(t, y[0], c, tau1, tau2, y_f)
 
-        p0 = [0.5, 0.1, 1, 0]
+        p0 = [0.4, 1, 0.1, 0]
         bounds = ([0, 0, 0, -np.inf], [1, np.inf, np.inf, np.inf])
         popt, _ = curve_fit(ubnd_wrapper, x, y,
                             bounds=bounds, p0=p0, jac='3-point')
@@ -132,7 +132,7 @@ def poroelastic_fit(x, y, bound=False):
             return poroelastic(t, y[0], c, tau1, tau2, y[-1])
 
         bounds = ([0, 0, 0], [1, np.inf, np.inf])
-        p0 = [0.5, 0.1, 1]
+        p0 = [0.4, 1, 0.1]
         popt, _ = curve_fit(bnd_wrapper, x, y,
                             bounds=bounds, p0=p0, jac='3-point')
         args = [y[0], *popt, y[-1]]
@@ -140,7 +140,7 @@ def poroelastic_fit(x, y, bound=False):
         def ubnd_wrapper(t, c, tau1, tau2, y_f):
             return poroelastic(t, y[0], c, tau1, tau2, y_f)
 
-        p0 = [0.5, 0.1, 1, 0]
+        p0 = [0.4, 1, 0.1, 0]
         bounds = ([0, 0, 0, -np.inf], [1, np.inf, np.inf, np.inf])
         popt, _ = curve_fit(ubnd_wrapper, x, y,
                             bounds=bounds, p0=p0, jac='3-point')
