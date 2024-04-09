@@ -19,7 +19,7 @@ app.run()
 ```
 You should see this interface:
 
-![pyrtz2.app]()
+![pyrtz2.app](./example/con050.PNG)
 
 These options are under development:
 - Show Fits
