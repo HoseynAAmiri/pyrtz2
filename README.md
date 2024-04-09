@@ -21,6 +21,8 @@ You should see this interface:
 
 ![pyrtz2.app](./example/con050.PNG)
 
+You can select the contact point interactively. It will perform fits for approach and dwell parts of the curves using Hertzian and biexponential equations. After downloading the `csv` of fits, you can download those curves in one pdf files.
+
 These options are under development:
 - Show Fits
 - Download Image Data
