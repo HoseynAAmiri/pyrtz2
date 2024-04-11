@@ -91,8 +91,8 @@ class Curve:
     def adjust_to_contact(self) -> None:
         self.data -= self.get_contact_values()
 
-    def get_data_between(self, start: int, last: int) -> pd.DataFrame:
-        return self.data.iloc[start:last].reset_index(drop=True)
+    def get_data_between(self, first: int, last: int) -> pd.DataFrame:
+        return self.data.iloc[first:last].reset_index(drop=True)
 
     def get_approach(self) -> pd.DataFrame:
         return self.get_data_between(0, self.dwell_range[0])
@@ -108,11 +108,12 @@ class Curve:
         ind_index = (np.abs(indent['ind'].to_numpy() - ind)).argmin()
         return indent.iloc[:ind_index].reset_index(drop=True)
 
-    def get_indent_between(self, start: float, last: float) -> pd.DataFrame:
+    def get_indent_between(self, first: float, last: float) -> pd.DataFrame:
         indent = self.get_indent()
-        start_index = int(start * len(indent))
-        last_index = int(last * len(indent))
-        return indent.iloc[start_index:last_index].reset_index(drop=True)
+        f = indent['f'].to_numpy()
+        first_index = np.argmin(np.abs(f - f[-1] * first))
+        last_index = np.argmin(np.abs(f - f[-1] * last))
+        return indent.iloc[first_index:last_index].reset_index(drop=True)
 
     def get_dwell(self) -> pd.DataFrame:
         return self.get_data_between(self.dwell_range[0], self.dwell_range[1])
