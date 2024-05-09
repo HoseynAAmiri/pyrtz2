@@ -70,7 +70,7 @@ def load_ibw(filename: str) -> curves.Curve:
     dwell_end_time = dwell_start_time + dwell_time
 
     dwell_end_index = int(np.argmin(np.abs(data.loc[:, 't'] - dwell_end_time)))
-    dwell_range = [trigger_index, dwell_end_index]
+    dwell_range = [trigger_index, dwell_end_index-1]
 
     if notes.get('SpringConstant'):
         k = float(notes['SpringConstant'])
