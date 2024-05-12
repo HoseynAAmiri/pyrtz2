@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 import os
 from . import asylum
 
@@ -57,3 +58,25 @@ class AFM():
             keys = self.get_key_by_num(idx, label=label, fill=fill)
             for key in keys:
                 self.experiment.remove_curve(key)
+
+    def compile(self, export_path: str) -> None:
+        self.experiment.set_cp_by_annotations()
+        self.experiment.set_vd_by_annotations()
+        self.experiment.remove_unannotated()
+        for idx, curve in enumerate(self.experiment):
+            curve.adjust_to_contact()
+            approach = curve.get_indent()
+            ind = approach['ind'].to_numpy()
+            dwell = curve.get_dwell()
+            t_dwell = dwell['t'].to_numpy()
+            directory = os.path.join(export_path, self.exp_name)
+            if not os.path.exists(directory):
+                os.makedirs(directory, exist_ok=True)
+            file_name = 'key' + str(idx) + '.npz'
+            np.savez(
+                os.path.join(directory, file_name),
+                approach=approach,
+                I=ind[-1],
+                dwell=dwell,
+                L=t_dwell[-1] - t_dwell[0],
+            )
