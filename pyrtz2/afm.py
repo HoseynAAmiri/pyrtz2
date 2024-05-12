@@ -67,6 +67,7 @@ class AFM():
             curve.adjust_to_contact()
             approach = curve.get_indent()
             ind = approach['ind'].to_numpy()
+            curve.get_approach_rates()
             dwell = curve.get_dwell()
             t_dwell = dwell['t'].to_numpy()
             directory = os.path.join(export_path, self.exp_name)
@@ -77,6 +78,7 @@ class AFM():
                 os.path.join(directory, file_name),
                 approach=approach,
                 I=ind[-1],
+                vel_ind=curve.vel_ind, vel_z=curve.vel_z,
                 dwell=dwell,
                 L=t_dwell[-1] - t_dwell[0],
             )
