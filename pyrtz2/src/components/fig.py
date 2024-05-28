@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 
 
 def render(id: str, title: str, xaxis: str) -> dcc.Graph:
-    fig = make_fig(title, xaxis)
+    fig = make(title, xaxis)
 
     if 'contact' in id:
         fig.add_vline(x=0, line=dict(color='red', width=1.2))
@@ -20,7 +20,7 @@ def render(id: str, title: str, xaxis: str) -> dcc.Graph:
     )
 
 
-def make_fig(title: str, xaxis: str) -> go.Figure:
+def make(title: str, xaxis: str) -> go.Figure:
     fig = go.Figure()
 
     fig.update_layout(
@@ -67,7 +67,14 @@ def make_fig(title: str, xaxis: str) -> go.Figure:
     return fig
 
 
-def update_fig(fig: go.Figure, x, y, mode: str, color: str, hover: bool = False, y2: bool = False) -> go.Figure:
+def update_fig(
+        fig: go.Figure,
+        x,
+        y,
+        mode: str,
+        color: str,
+        hover: bool = False,
+) -> go.Figure:
     hover_texts = None
     if hover:
         hover_texts = [f'Index: {i}' for i in range(len(x))]
@@ -92,18 +99,42 @@ def update_fig(fig: go.Figure, x, y, mode: str, color: str, hover: bool = False,
 
         fig.add_trace(trace)
     else:
-        fig.data[0].x = x
-        fig.data[0].y = y
+        fig.data[0]['x'] = x
+        fig.data[0]['y'] = y
         fig.data[0]['text'] = hover_texts
 
     return fig
 
 
+def handle_figure(
+        file_name: str,
+        cp: int,
+        vd: bool,
+        adjust: bool,
+        fit: bool,
+        probe_diameter: float,
+        indentation: float | list[float]
+) -> tuple[go.Figure, go.Figure]:
+    from ...asylum import load_ibw
+    curve = load_ibw(file_name)
+    curve.set_contact_index(cp)
+    curve.get_figs_data(vd=vd, adjust=adjust)
+    curve.get_contact_fig_plot()
+    curve.get_dwell_fig_plot()
+
+    if fit and cp > 0:
+        curve.get_fits_data(probe_diameter, indentation)
+        curve.add_contact_fit()
+        curve.add_dwell_fit()
+
+    return curve.contact_fig, curve.dwell_fig
+
+
 def update_contact_line(cp: int, fig: dict | go.Figure) -> go.Figure:
     if isinstance(fig, dict):
         fig = go.Figure(fig)
-    data_x = fig.data[0].x
-    data_y = fig.data[0].y
+    data_x = fig.data[0]['x']
+    data_y = fig.data[0]['y']
     fig.layout['shapes'][0]['x0'] = data_x[cp]
     fig.layout['shapes'][0]['x1'] = data_x[cp]
     fig.layout['shapes'][1]['y0'] = data_y[cp]

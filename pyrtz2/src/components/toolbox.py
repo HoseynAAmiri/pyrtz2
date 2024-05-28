@@ -1,11 +1,12 @@
 from dash import Dash, html
 
-from ..data import downloader
 from . import (
     ids,
     annotator,
+    contact_controls,
+    image_controls,
     fitter,
-    contact_controls
+    downloader
 )
 
 
@@ -18,9 +19,10 @@ def render(app: Dash) -> html.Div:
             html.Div(
                 children=[
                     contact_controls.render(app),
+                    image_controls.render(app),
                     html.Button(
-                        children="Download Image Data",
-                        id=ids.DOWNLOAD_IMAGEDATA,
+                        children="Download Annotations",
+                        id=ids.DOWNLOAD_ANNOTATIONS,
                         n_clicks=0,
                         className="dash-button"
                     ),
@@ -36,6 +38,9 @@ def render(app: Dash) -> html.Div:
             downloader.render(app),
         ],
         style={
+            'display': 'flex',
+            'flex-direction': 'column',
+            'gap': '5px',
             'width': '50%',
         },
     )

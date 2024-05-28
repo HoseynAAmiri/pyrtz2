@@ -3,15 +3,14 @@ from dash.dependencies import Input, Output, State
 
 import os
 
-from . import ids
-from ..data import (
+from . import (
+    ids,
     experiment_loader,
     image_loader
 )
 
 
 def render(app: Dash) -> html.Div:
-
     @app.callback(
         Output(ids.LOG, 'children'),
         Input(ids.LOAD_EXPERIMENT, 'n_clicks'),

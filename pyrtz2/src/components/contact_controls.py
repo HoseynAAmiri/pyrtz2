@@ -127,13 +127,7 @@ def render(app: Dash) -> html.Div:
                         'gap': '5px',
                     },
                 ),
-            ),
-            html.Button(
-                children="Download Annotations",
-                id=ids.DOWNLOAD_ANNOTATIONS,
-                n_clicks=0,
-                className="dash-button"
-            ),
+            )
         ],
         style={
             'display': 'flex',

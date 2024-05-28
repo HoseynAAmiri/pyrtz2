@@ -24,12 +24,12 @@ def render(app: Dash) -> dcc.Store:
         label_list = [label.strip() for label in labels.split(';')]
 
         images = {}
-        all_images_dict = {}
+        all_images = {}
         for tif_path in glob.glob(os.path.join(experiment_path, '*.tif')):
             curve_name = os.path.basename(tif_path).split('.')[0]
             curve_key = extract_keys(curve_name, label_list)
-            all_images_dict[curve_key] = os.path.join(experiment_path, tif_path)
-            images = group_values_by_keys(all_images_dict)
+            all_images[curve_key] = os.path.join(experiment_path, tif_path)
+            images = group_values_by_keys(all_images)
 
         return dump(images)
 

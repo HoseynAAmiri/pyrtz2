@@ -38,11 +38,13 @@ def lin_fit(x, y):
 
 def powerlaw_fit(x, y):
     x_min = min(x)
-    x_max = max(x)
     y_min = min(y)
+    x = (x - x_min)
+    x_max = max(x)
+    x = x / x_max
+    y = (y - y_min)
     y_max = max(y)
-    x = (x - x_min) / x_max
-    y = (y - y_min) / y_max
+    y = y / y_max
     bounds = ([0, 0], [np.inf, np.inf])
     popt, _ = curve_fit(powerlaw, x, y, bounds=bounds)
     y_pred = powerlaw(x, *popt)
@@ -52,13 +54,16 @@ def powerlaw_fit(x, y):
 
 def poly_fit(x, y):
     x_min = min(x)
-    x_max = max(x)
     y_min = min(y)
+    x = (x - x_min)
+    x_max = max(x)
+    x = x / x_max
+    y = (y - y_min)
     y_max = max(y)
-    x = (x - x_min) / x_max
-    y = (y - y_min) / y_max
-    bounds = ([0, 0,  0], [np.inf, np.inf, np.inf])
-    popt, _ = curve_fit(poly, x, y, bounds=bounds)
+    y = y / y_max
+    bounds = ([0, 0, 0], [np.inf, np.inf, np.inf])
+    p0 = [1, 1, 1]
+    popt, _ = curve_fit(poly, x, y, bounds=bounds, p0=p0, jac='3-point')
     y_pred = poly(x, *popt)
     r2_score = r2(y, y_pred)
     return popt, r2_score, y_pred * y_max + y_min
@@ -68,16 +73,10 @@ def hertzian_fit(x, y, diameter):
     def wrapper(ind, e_star):
         return hertzian(ind, diameter, e_star)
 
-    x_min = min(x)
-    y_min = min(y)
-    x = x - x_min
-    y = y - y_min
-
     popt, _ = curve_fit(wrapper, x, y)
-
     y_pred = hertzian(x, diameter, *popt)
     r2_score = r2(y, y_pred)
-    return popt, r2_score, y_pred + y_min
+    return popt, r2_score, y_pred
 
 
 def exponential_fit(x, y, bound=False):

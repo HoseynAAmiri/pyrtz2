@@ -1,11 +1,33 @@
-from dash import Dash, dcc, html
+from dash import Dash, dcc, html, no_update, callback_context
 from dash.dependencies import Input, Output, State
 
 
 from . import ids
+from ..utils.processor import process_indentation
 
 
 def render(app: Dash) -> html.Div:
+    @app.callback(
+        [Output(ids.ADJUST_CHECKLIST, 'value'),
+         Output(ids.FIT_CHECKLIST, 'value'),
+         Output(ids.INDENTATION, 'value')],
+        [Input(ids.ADJUST_CHECKLIST, 'value'),
+         Input(ids.FIT_CHECKLIST, 'value')],
+        State(ids.INDENTATION, 'value'),
+        prevent_initial_call=True
+    )
+    def link_adjust_fit(adjust, fit, indentation):
+        ctx = callback_context
+        trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        indentation = process_indentation(indentation)
+        if trigger_id == ids.FIT_CHECKLIST and indentation == 0.0:
+            return no_update, [], "Unable to proceed without indentation!"
+
+        if trigger_id == ids.FIT_CHECKLIST and not adjust:
+            adjust = [True]
+        if trigger_id == ids.ADJUST_CHECKLIST and fit:
+            fit = []
+        return adjust, fit, no_update
 
     return html.Div(
         children=[
@@ -32,36 +54,6 @@ def render(app: Dash) -> html.Div:
                     'width': '100%',
                 }
             ),
-            dcc.Loading(
-                id=ids.DOWNLOAD_ANIMATION,
-                type="dot",
-                children=html.Div(
-                    children=[
-                        html.Button(
-                            children="Download Fits",
-                            id=ids.DOWNLOAD_FITS,
-                            n_clicks=0,
-                            className="dash-button"
-                        ),
-                        html.Button(
-                            children="Download Curves",
-                            id=ids.DOWNLOAD_CURVES,
-                            n_clicks=0,
-                            className="dash-button"
-                        ),
-                        html.Button(
-                            children="Download Experiment",
-                            id=ids.DOWNLOAD_EXPERIMENT,
-                            n_clicks=0,
-                            className="dash-button"
-                        ),
-                    ],
-                    style={
-                        'display': 'flex',
-                        'gap': '5px',
-                    },
-                )
-            )
         ],
         style={
             'display': 'flex',

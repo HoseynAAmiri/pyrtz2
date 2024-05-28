@@ -36,11 +36,7 @@ def create_layout(app: Dash) -> html.Div:
                     html.Div(
                         children=[
                             curve_dropdown.render(app),
-                            dcc.Loading(
-                                id=ids.LOADIMAGE_ANIMATION,
-                                type="default",
-                                children=[image_frame.render(app)]
-                            ),
+                            image_frame.render(app),
                         ],
                         style={
                             'width': '50%',

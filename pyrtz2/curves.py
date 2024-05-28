@@ -8,11 +8,11 @@ import json
 import ast
 import io
 from tqdm import tqdm
-from typing import Any, Iterable
+from typing import Any, Iterable, overload
 from time import sleep
 
 from .fit import lin_fit, poly_fit, hertzian_fit, biexponential_fit
-from .src.components.fig import make_fig
+from .src.components.fig import make
 
 
 def read_json_file(file: str) -> dict[tuple, bool | int]:
@@ -105,12 +105,15 @@ class Curve:
 
     def get_indent_until(self, ind: float) -> pd.DataFrame:
         indent = self.get_indent()
-        ind_index = (np.abs(indent['ind'].to_numpy() - ind)).argmin()
+        indentation = indent['ind'].to_numpy()
+        indentation = indentation - indentation[0]
+        ind_index = np.argmin(np.abs(indentation - ind))
         return indent.iloc[:ind_index+1].reset_index(drop=True)
 
     def get_indent_between(self, first: float, last: float) -> pd.DataFrame:
         indent = self.get_indent()
         f = indent['f'].to_numpy()
+        f = f - f[0]
         first_index = np.argmin(np.abs(f - f[-1] * first))
         last_index = np.argmin(np.abs(f - f[-1] * last))
         return indent.iloc[first_index:last_index+1].reset_index(drop=True)
@@ -207,7 +210,7 @@ class Curve:
         }
 
     def get_contact_fig_plot(self) -> go.Figure:
-        fig = make_fig(
+        fig = make(
             title=fr"$\text{{Selected Contact Point: {self.contact_index}}}$",
             xaxis=r"$Indentation \text{ (m)}$"
         )
@@ -235,7 +238,7 @@ class Curve:
         return fig
 
     def get_dwell_fig_plot(self) -> go.Figure:
-        fig = make_fig(
+        fig = make(
             title=r"$\text{Dwell}$",
             xaxis=r"$Time \text{ (s)}$"
         )
@@ -254,13 +257,20 @@ class Curve:
         self.dwell_fig = fig
         return fig
 
+    @overload
+    def get_fits_data(self, probe_diameter: float, ind: float) -> None: ...
+
+    @overload
+    def get_fits_data(self, probe_diameter: float,
+                      ind: list[float]) -> None: ...
+
     def get_fits_data(self, probe_diameter: float, ind: float | list[float]) -> None:
         indent = self.get_indent()
         indent_x_pred = indent['ind'].to_numpy()
         self.indent_param, self.indent_R2, indent_y_pred = self.fit_indent()
 
-        self.max_ind = max(indent['ind'])
-        self.max_f = max(indent['f'])
+        self.max_ind = np.max(indent['ind'])
+        self.max_f = np.max(indent['f'])
 
         if isinstance(ind, float):
             self.hertzian_param, self.hertzian_R2, hertzian_y_pred = self.fit_indent_until(
@@ -280,56 +290,57 @@ class Curve:
             'indent': (indent_x_pred, indent_y_pred),
             'hertzian': (hertzian_x_pred, hertzian_y_pred),
             'dwell': (dwell_x_pred, dwell_y_pred),
-
         }
 
     def add_contact_fit(self) -> go.Figure:
-        x, y = self.fits_data['indent']
-        trace = go.Scattergl(
-            x=x,
-            y=y,
-            name='PolyFit',
-            mode='lines',
-            line={'color': 'red'},
-        )
-        self.contact_fig.add_trace(trace)
+        if hasattr(self, 'fits_data'):
+            x, y = self.fits_data['indent']
+            trace = go.Scattergl(
+                x=x,
+                y=y,
+                name='PolyFit',
+                mode='lines',
+                line={'color': 'red'},
+            )
+            self.contact_fig.add_trace(trace)
 
-        x, y = self.fits_data['hertzian']
-        trace = go.Scattergl(
-            x=x,
-            y=y,
-            name='HertzianFit',
-            mode='lines',
-            line={
-                'color': 'green',
-                'width': 3,
-            },
-        )
-        self.contact_fig.add_trace(trace)
+            x, y = self.fits_data['hertzian']
+            trace = go.Scattergl(
+                x=x,
+                y=y,
+                name='HertzianFit',
+                mode='lines',
+                line={
+                    'color': 'green',
+                    'width': 3,
+                },
+            )
+            self.contact_fig.add_trace(trace)
 
         return self.contact_fig
 
     def add_dwell_fit(self) -> go.Figure:
-        x, y = self.fits_data['dwell']
+        if hasattr(self, 'fits_data'):
+            x, y = self.fits_data['dwell']
 
-        trace = go.Scattergl(
-            x=x,
-            y=y,
-            name='DwellFit',
-            mode='lines',
-            line={
-                'color': 'green',
-                'width': 3,
-            },
-        )
-        self.dwell_fig.add_trace(trace)
+            trace = go.Scattergl(
+                x=x,
+                y=y,
+                name='DwellFit',
+                mode='lines',
+                line={
+                    'color': 'green',
+                    'width': 3,
+                },
+            )
+            self.dwell_fig.add_trace(trace)
 
         return self.dwell_fig
 
     def get_contact_fig_pdf(self) -> go.Figure:
         title = fr"$\text{{Selected Contact Point: {self.contact_index}}}$"
         xaxis = r"$Indentation \text{ (m)}$"
-        fig = make_fig(title, xaxis)
+        fig = make(title, xaxis)
 
         x, y = self.figs_data['approach']
         trace = go.Scatter(x=x, y=y, name='Approach', marker={'color': 'blue'})
@@ -358,7 +369,7 @@ class Curve:
     def get_dwell_fig_pdf(self) -> go.Figure:
         title = r"$\text{Dwell}$"
         xaxis = r"$Time \text{ (s)}$"
-        fig = make_fig(title, xaxis)
+        fig = make(title, xaxis)
 
         x, y = self.figs_data['dwell']
         trace = go.Scatter(x=x, y=y, name='Dwell',
