@@ -24,6 +24,5 @@ You should see this interface:
 You can select the contact point interactively. It will perform fits for approach and dwell parts of the curves using Hertzian and biexponential equations. After downloading the `csv` of fits, you can download those curves in one `pdf` file.
 
 These options are under development:
-- Show Fits
-- Download Image Data
+- Download Images
 - Download Experiment
