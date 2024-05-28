@@ -38,38 +38,26 @@ def render(app: Dash) -> html.Div:
          Output(ids.IMAGE_HOLDER, 'clickData')],
         Input(ids.IMAGE_HOLDER, 'clickData'),
         [State(ids.CURVE_DROPDOWN, 'value'),
-         State(ids.IM_ANNOTATIONS, 'data')],
-        prevent_initial_call=True
-    )
-    def handle_click(clickData, curve_value, im_data):
-        key = eval(curve_value)['key']
-        im_annotations = json.loads(im_data)
-        if im_annotations[repr(key)]['selection'] == 'auto':
-            x, y = clickData['points'][0]['y'], clickData['points'][0]['x']
-            im_annotations[repr(key)]['clickData'] = [[x, y]]
-            return json.dumps(im_annotations), None
-
-        return no_update, None
-
-    @app.callback(
-        [Output(ids.IMAGE_HOLDER, 'figure', allow_duplicate=True),
-         Output(ids.IM_ANNOTATIONS, 'data')],
-        Input(ids.IMAGE_HOLDER, 'relayoutData'),
-        [State(ids.CURVE_DROPDOWN, 'value'),
          State(ids.IM_ANNOTATIONS, 'data'),
          State(ids.IMAGE_HOLDER, 'figure')],
         prevent_initial_call=True
     )
-    def handle_draw(_, curve_value, im_data, fig):
-        if not curve_value or not 'shapes' in fig['layout']:
-            raise PreventUpdate
-
+    def handle_click(clickData, curve_value, im_data, fig):
         key = eval(curve_value)['key']
         im_annotations = json.loads(im_data)
-        shapes = fig['layout']['shapes'][0]
-        im_annotations[repr(key)]['clickData'] = parse_path(shapes['path'])
-        fig['layout']['shapes'] = []
-        return fig, json.dumps(im_annotations)
+        selection = im_annotations[repr(key)]['selection']
+        if selection == 'auto':
+            x, y = clickData['points'][0]['y'], clickData['points'][0]['x']
+            im_annotations[repr(key)]['clickData'] = [[x, y]]
+            return json.dumps(im_annotations), None
+
+        if selection == 'manual' and 'shapes' in fig['layout']:
+            shapes = fig['layout']['shapes'][0]
+            im_annotations[repr(key)]['clickData'] = parse_path(shapes['path'])
+            fig['layout']['shapes'] = []
+            return json.dumps(im_annotations), None
+
+        return no_update, None
 
     return html.Div(
         className='image',
