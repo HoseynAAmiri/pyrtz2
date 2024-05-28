@@ -1,6 +1,6 @@
 # pyrtz2
 
-Analysis of AFM force curves in Python.
+Analysis of AFM force curves and images via Python.
 
 Developed at Georgia Institute of Technology
 
