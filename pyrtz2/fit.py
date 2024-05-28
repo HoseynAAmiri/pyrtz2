@@ -118,7 +118,7 @@ def exponential_fit(x, y, bound=False):
             return exponential(t, y[0], tau, y_f)
 
         bounds = ([0, -np.inf], [np.inf, np.inf])
-        return eval_fit(x, y, ubnd_wrapper, bounds=bound)
+        return eval_fit(x, y, ubnd_wrapper, bounds=bounds)
 
 def biexponential_fit(x, y, bound=False):
     if bound:
