@@ -2,23 +2,18 @@ import numpy as np
 from scipy.optimize import curve_fit
 from sklearn.metrics import r2_score as r2
 
-
 # Functions
 def powerlaw(x, a, b):
     return a * (x ** b)
 
-
 def poly(x, a, b, c):
     return a * (x ** b) + c * x
-
 
 def hertzian(ind, diameter, e_star):
     return (4 / 3) * e_star * ((0.5 * diameter) ** 0.5) * (ind ** 1.5)
 
-
 def exponential(t, y_0, tau, y_f):
     return (y_0 - y_f) * np.exp(-(t-t[0]) * tau) + y_f
-
 
 def biexponential(t, y_0, c, tau1, tau2, y_f):
     return (y_0 - y_f) * (c * np.exp(-(t-t[0]) * tau1) + (1 - c) * np.exp(-(t-t[0]) * tau2)) + y_f
