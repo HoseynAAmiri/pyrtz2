@@ -141,10 +141,7 @@ def handle_image(image_path: str, im: dict) -> go.Figure:
     image_array = add_contours(image_array, cell_contours)
     img = plot(img, image_array)
     if im['selection'] == 'manual':
-        img.update_layout(
-            dragmode='drawclosedpath',
-            modebar_add='drawclosedpath'
-        )
+        img.update_layout(modebar_add=['drawclosedpath', 'eraseshape'])
     return img
 
 
