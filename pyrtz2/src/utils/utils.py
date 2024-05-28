@@ -82,9 +82,24 @@ def group_values_by_keys(original_dict: dict) -> dict:
             new_dict[new_key].append(value)
     return new_dict
 
-def load_image(image_path:str) -> str:
+
+def load_image(image_path: str) -> str:
     img = Image.open(image_path)
     buffer = io.BytesIO()
     img.save(buffer, format="JPEG")  # can be changed to "PNG"
     encoded_image = base64.b64encode(buffer.getvalue()).decode()
     return f"data:image/jpeg;base64,{encoded_image}"
+
+
+def parse_path(shape_path: str) -> list[list[list[int]]]:
+    shape_path = shape_path.replace('M', 'L').replace('Z', 'L')
+    path_parts = shape_path.split('L')
+
+    coordinates = []
+    for part in path_parts:
+        if part.strip():
+            coord_str = part.strip()
+            coord = [int(round(float(x))) for x in coord_str.split(',')]
+            coordinates.append(coord)
+
+    return [coordinates]

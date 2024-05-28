@@ -22,6 +22,8 @@ dependencies = [
     'PyPDF2',
     'scikit-learn',
     'scipy',
+    'scikit-image',
+    'opencv-python',
     'tqdm',
 ]
 

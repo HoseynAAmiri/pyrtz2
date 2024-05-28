@@ -1,61 +1,83 @@
-from dash import Dash, html
-from dash.dependencies import Input, Output
+from dash import Dash, html, no_update
+from dash.exceptions import PreventUpdate
+from dash.dependencies import Input, Output, State
+import json
 
-from . import ids
-from ..utils.utils import load, load_image
+from . import ids, image
+from ..utils.utils import load, get_current_annotation, parse_path
 
 
 def render(app: Dash) -> html.Div:
-
     @app.callback(
-        Output(ids.IMAGE_FRAME, 'src'),
+        Output(ids.IMAGE_HOLDER, 'figure', allow_duplicate=True),
         [Input(ids.CURVE_DROPDOWN, 'value'),
-         Input(ids.IMAGES, 'data')],
+         Input(ids.IM_ANNOTATIONS, 'data')],
+        State(ids.IMAGES, 'data'),
         prevent_initial_call=True
     )
-    def update_image_frame(curve_value, encoded_images):
-        if not encoded_images or not curve_value:
-            return ''
-
-        images: dict = load(encoded_images)
+    def update_image_frame(curve_value, im_data, encoded_images):
+        if not curve_value:
+            raise PreventUpdate
 
         key = eval(curve_value)['key']
         new_key = key[:-1] if len(key) > 1 else key
 
-        # THIS ONLY SHOWS THE FIRST IMAGE IF THERE IS ONE
-        if images.get(new_key):
+        images: dict = load(encoded_images)
+
+        if new_key in images:
+            im = get_current_annotation(curve_value, im_data)
+            # THIS ONLY SHOWS THE FIRST IMAGE IF THERE IS ONE
             image_path = images[new_key][0]
-            image_src = load_image(image_path)
-            return image_src
+            img = image.handle_image(image_path, im)
+            return img
         else:
-            return ''
-    '''
+            return image.make()
+
     @app.callback(
-        Output('click-data', 'children'),
-        Input('image-graph', 'clickData')
+        [Output(ids.IM_ANNOTATIONS, 'data', allow_duplicate=True),
+         Output(ids.IMAGE_HOLDER, 'clickData')],
+        Input(ids.IMAGE_HOLDER, 'clickData'),
+        [State(ids.CURVE_DROPDOWN, 'value'),
+         State(ids.IM_ANNOTATIONS, 'data')],
+        prevent_initial_call=True
     )
-    def store_cell_position(clickData):
-        if clickData is None:
-            return []
-        else:
-            # Extract coordinates from the clickData
-            x, y = clickData['points'][0]['x'], clickData['points'][0]['y']
-            return [x, y]
-    '''
+    def handle_click(clickData, curve_value, im_data):
+        key = eval(curve_value)['key']
+        im_annotations = json.loads(im_data)
+        if im_annotations[repr(key)]['selection'] == 'auto':
+            x, y = clickData['points'][0]['y'], clickData['points'][0]['x']
+            im_annotations[repr(key)]['clickData'] = [[x, y]]
+            return json.dumps(im_annotations), None
+
+        return no_update, None
+
+    @app.callback(
+        [Output(ids.IMAGE_HOLDER, 'figure', allow_duplicate=True),
+         Output(ids.IM_ANNOTATIONS, 'data')],
+        Input(ids.IMAGE_HOLDER, 'relayoutData'),
+        [State(ids.CURVE_DROPDOWN, 'value'),
+         State(ids.IM_ANNOTATIONS, 'data'),
+         State(ids.IMAGE_HOLDER, 'figure')],
+        prevent_initial_call=True
+    )
+    def handle_draw(_, curve_value, im_data, fig):
+        if not curve_value or not 'shapes' in fig['layout']:
+            raise PreventUpdate
+
+        key = eval(curve_value)['key']
+        im_annotations = json.loads(im_data)
+        shapes = fig['layout']['shapes'][0]
+        im_annotations[repr(key)]['clickData'] = parse_path(shapes['path'])
+        fig['layout']['shapes'] = []
+        return fig, json.dumps(im_annotations)
+
     return html.Div(
         className='image',
         children=[
-            html.Img(
-                id=ids.IMAGE_FRAME,
-                style={
-                    'display': 'flex',
-                    'height': '100%',
-                    'margin': '10px auto',
-                }
-            )
+            image.render(ids.IMAGE_HOLDER)
         ],
         style={
-            'height': '220px',
+            'height': '280px',
             'width': 'auto',
         },
     )
