@@ -56,10 +56,13 @@ def fit(x, y, fun, y_max=1, y_min=0, bounds=None, p0=None, jac=None, popt=None, 
     # Evaluating fit
     y_pred = fun(x, *popt)
     r2_score = r2(y, y_pred)
-    return popt, r2_score, y_pred * y_max + y_min
+    #print(f"Popt: {popt}, R2 {r2_score}, Yp {y_pred}\n")
+    return popt, r2_score, (y_pred * y_max + y_min)
 
 def lin_fit(x, y):
-    return fit(x, y, np.poly1d(np.polyfit(x, y, 1)), popt=[])
+    def wrapper(t, *popt):
+        return np.poly1d([*popt])(t)
+    return fit(x, y, wrapper, popt=np.polyfit(x, y, 1))
 
 def powerlaw_fit(x, y):
     return fit(x, y, powerlaw, bounds=([0, 0], [np.inf, np.inf]),norm=True)
