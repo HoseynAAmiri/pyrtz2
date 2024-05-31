@@ -1,9 +1,9 @@
 from pyrtz2 import fit
 
 import numpy as np
+import numpy.typing as npt
 from scipy.optimize import curve_fit
 from sklearn.metrics import r2_score as r2
-
 
 # Functions
 def powerlaw(x, a, b):
@@ -36,6 +36,7 @@ def lin_fit(x, y):
     y_pred = np.poly1d(popt)(x)
     r2_score = r2(y, y_pred)
     return popt, r2_score, y_pred
+
 
 def powerlaw_fit(x, y):
     x_min = min(x)
@@ -150,44 +151,78 @@ def poroelastic_fit(x, y, bound=False):
     r2_score = r2(y, y_pred)
     return popt, r2_score, y_pred
 
-def testf(x, y, fa, fb, *t):
+def comparison_test(x, y, fa, fb, *t):
     popt_a, r2_a, Yp_a = fa(x, y, *t)
-    # popt_b, r2_b, Yp_b = fb(x, y, *t)
+    popt_b, r2_b, Yp_b = fb(x, y, *t)
 
     # print(f"Old: {popt_a}\n")
     # print(f"New: {popt_b}\n")
 
-    # np.testing.assert_almost_equal(popt_a, popt_b)
+    np.testing.assert_almost_equal(popt_a, popt_b)
+    np.testing.assert_almost_equal(r2_a, r2_b)
+    np.testing.assert_almost_equal(Yp_a, Yp_b)
+
+def general_test(x, y, fa, popt_b=None, *t):
+    popt_a, r2_a, Yp_a = fa(x, y, *t)
+    # popt_b, r2_b, Yp_b = fb(x, y, *t)
+
+    # print(f"Parameters: {popt_a}, {r2_a}\n")
+    # print(f"Expected: {y}\n")
+    # print(f"Calculated: {Yp_a}\n")
+    print(f"Max Error {max(abs(y-Yp_a))}\n")
+    # print(f"New: {popt_b}\n")
+
+    if (popt_b):
+        np.testing.assert_almost_equal(popt_a, popt_b)
+    
     # np.testing.assert_almost_equal(r2_a, r2_b)
-    # np.testing.assert_almost_equal(Yp_a, Yp_b)
+    # np.testing.assert_almost_equal(Yp_a, y)
 
 if __name__ == '__main__':
-    # x = [0.1, 0.2, 0.3, 0.4]
-    # y = [0.2, 0.4, 0.6, 0.8]
+    x = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
+    # y = np.array([0.2, 0.4, 0.6, 0.8])
 
-    x = [0, 1]
-    y = [0, 1]
-
-    testf(x, y, lin_fit, fit.lin_fit)
+    general_test(x, fit.lin(x, 1, 2), fit.lin_fit, [1, 2])
     print("Passed Lin Fit Tests...\n")
 
-    testf(x, y, powerlaw_fit, fit.powerlaw_fit)
-    print("Passed Power Fit Tests")
+    general_test(x, fit.powerlaw(x, 1, 2), fit.powerlaw_fit)
+    print("Passed Power Fit Tests...\n")
 
-    testf(x, y, poly_fit, fit.poly_fit)
-    print("Passed Power Fit Tests")
+    general_test(x, fit.poly(x, 1, 2, 3), fit.lin_fit)
+    print("Passed Poly Fit Tests...\n")
     
-    testf(x, y, hertzian_fit, fit.hertzian_fit, 1)
+    general_test(x, fit.hertzian(x, 1, 2), fit.hertzian_fit, None, 1)
     print("Passed Hertzian Fit Tests...\n")
 
-    testf(x, y, exponential_fit, fit.exponential_fit)
+    general_test(x, fit.exponential(x, 1, 2, 3), fit.exponential_fit)
     print("Passed Exponential Fit Tests...\n")
 
-    testf(x, y, biexponential_fit, fit.biexponential_fit)
+    general_test(x, fit.biexponential(x, 1, 2, 3, 4, 5), fit.biexponential_fit)
     print("Passed Biexponential Fit Tests...\n")
 
-    testf(x, y, poroelastic_fit, fit.poroelastic_fit)
+    general_test(x, fit.poroelastic(x, 1, 2, 3, 4, 5), fit.poroelastic_fit)
     print("Passed Poroelastic Fit Tests...\n")
+
+    comparison_test(x, fit.lin(x, 1, 2), lin_fit, fit.lin_fit)
+    print("Passed Lin Fit Comparison Tests...\n")
+
+    comparison_test(x, fit.powerlaw(x, 1, 2), powerlaw_fit, fit.powerlaw_fit)
+    print("Passed Power Fit Comparison Tests...\n")
+
+    comparison_test(x, fit.poly(x, 1, 2, 3), poly_fit, fit.poly_fit)
+    print("Passed Poly Fit Comparison Tests...\n")
+    
+    comparison_test(x, fit.hertzian(x, 1, 2), hertzian_fit, fit.hertzian_fit, 1)
+    print("Passed Hertzian Fit Comparison Tests...\n")
+
+    comparison_test(x, fit.exponential(x, 1, 2, 3), exponential_fit, fit.exponential_fit)
+    print("Passed Exponential Fit Comparison Tests...\n")
+
+    comparison_test(x, fit.biexponential(x, 1, 2, 3, 4, 5), biexponential_fit, fit.biexponential_fit)
+    print("Passed Biexponential Fit Comparison Tests...\n")
+
+    comparison_test(x, fit.poroelastic(x, 1, 2, 3, 4, 5), poroelastic_fit, fit.poroelastic_fit)
+    print("Passed Poroelastic Fit Comparison Tests...\n")
     
 
 
