@@ -37,19 +37,16 @@ class AFM():
 
     def get_key_by_num(self, num: int, label: int = 1, fill: int = 2) -> list[tuple]:
         num_str = str(num).zfill(fill)
-
-        keys = []
-        for key in self.curve_keys:
-            key_index = key[label]
-            if num_str in key_index:
-                keys.append(key)
-        return keys
+        return self.get_key(num_str)
 
     def get_key_by_name(self, name: str, label: int = 1) -> list[tuple]:
+        return self.get_key(name)
+    
+    def get_key(self, data: str | int, label: int = 1) -> list[tuple]:
         keys = []
         for key in self.curve_keys:
             key_index = key[label]
-            if name in key_index:
+            if data in key_index:
                 keys.append(key)
         return keys
 
