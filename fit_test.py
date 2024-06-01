@@ -183,45 +183,59 @@ if __name__ == '__main__':
     # y = np.array([0.2, 0.4, 0.6, 0.8])
 
     general_test(x, fit.lin(x, 1, 2), fit.lin_fit, [1, 2])
+    general_test(x, fit.lin(x, 3, 4), fit.lin_fit, [3, 4])
     print("Passed Lin Fit Tests...\n")
 
     general_test(x, fit.powerlaw(x, 1, 2), fit.powerlaw_fit)
+    general_test(x, fit.powerlaw(x, 3, 4), fit.powerlaw_fit)
     print("Passed Power Fit Tests...\n")
 
-    general_test(x, fit.poly(x, 1, 2, 3), fit.lin_fit)
+    general_test(x, fit.poly(x, 1, 2, 3), fit.poly_fit)
+    general_test(x, fit.poly(x, 4, 5, 6), fit.poly_fit)
     print("Passed Poly Fit Tests...\n")
     
     general_test(x, fit.hertzian(x, 1, 2), fit.hertzian_fit, None, 1)
+    general_test(x, fit.hertzian(x, 3, 4), fit.hertzian_fit, None, 3)
     print("Passed Hertzian Fit Tests...\n")
 
     general_test(x, fit.exponential(x, 1, 2, 3), fit.exponential_fit)
+    general_test(x, fit.exponential(x, 4, 5, 6), fit.exponential_fit)
     print("Passed Exponential Fit Tests...\n")
 
     general_test(x, fit.biexponential(x, 1, 2, 3, 4, 5), fit.biexponential_fit)
+    general_test(x, fit.biexponential(x, 6, 7, 8, 9, 10), fit.biexponential_fit)
     print("Passed Biexponential Fit Tests...\n")
 
     general_test(x, fit.poroelastic(x, 1, 2, 3, 4, 5), fit.poroelastic_fit)
+    general_test(x, fit.poroelastic(x, 6, 7, 8, 9, 10), fit.poroelastic_fit)
     print("Passed Poroelastic Fit Tests...\n")
 
     comparison_test(x, fit.lin(x, 1, 2), lin_fit, fit.lin_fit)
+    comparison_test(x, fit.lin(x, 3, 4), lin_fit, fit.lin_fit)
     print("Passed Lin Fit Comparison Tests...\n")
 
     comparison_test(x, fit.powerlaw(x, 1, 2), powerlaw_fit, fit.powerlaw_fit)
+    comparison_test(x, fit.powerlaw(x, 3, 4), powerlaw_fit, fit.powerlaw_fit)
     print("Passed Power Fit Comparison Tests...\n")
 
     comparison_test(x, fit.poly(x, 1, 2, 3), poly_fit, fit.poly_fit)
+    comparison_test(x, fit.poly(x, 4, 5, 6), poly_fit, fit.poly_fit)
     print("Passed Poly Fit Comparison Tests...\n")
     
     comparison_test(x, fit.hertzian(x, 1, 2), hertzian_fit, fit.hertzian_fit, 1)
+    comparison_test(x, fit.hertzian(x, 3, 4), hertzian_fit, fit.hertzian_fit, 3)
     print("Passed Hertzian Fit Comparison Tests...\n")
 
     comparison_test(x, fit.exponential(x, 1, 2, 3), exponential_fit, fit.exponential_fit)
+    comparison_test(x, fit.exponential(x, 4, 5, 6), exponential_fit, fit.exponential_fit)
     print("Passed Exponential Fit Comparison Tests...\n")
 
     comparison_test(x, fit.biexponential(x, 1, 2, 3, 4, 5), biexponential_fit, fit.biexponential_fit)
+    comparison_test(x, fit.biexponential(x, 6, 7, 8, 9, 10), biexponential_fit, fit.biexponential_fit)
     print("Passed Biexponential Fit Comparison Tests...\n")
 
     comparison_test(x, fit.poroelastic(x, 1, 2, 3, 4, 5), poroelastic_fit, fit.poroelastic_fit)
+    comparison_test(x, fit.poroelastic(x, 6, 7, 8, 9, 10), poroelastic_fit, fit.poroelastic_fit)
     print("Passed Poroelastic Fit Comparison Tests...\n")
     
 

@@ -49,7 +49,6 @@ def _get_data(wave: dict) -> pd.DataFrame:
     wave_frame.loc[:, 'ind'] = wave_frame['z'] - wave_frame['defl']
     return wave_frame
 
-
 def load_ibw(filename: str) -> curves.Curve:
     wave = bw.load(filename)
     data = _get_data(wave)
@@ -60,11 +59,14 @@ def load_ibw(filename: str) -> curves.Curve:
     t = np.arange(data.shape[0]) * sample_time
     data.loc[:, 't'] = t
 
-    if notes.get('DwellTime'):
-        dwell_time = float(notes['DwellTime'])
-    else:
-        print("Missing DwellTime")
-        dwell_time = 0.0
+    def check_get(_notes: dict, key: str, default: float = 0) -> float:
+        if _notes.get(key):
+            return float(_notes[key])
+        else:
+            print(f"Missing {key}")
+            return default
+
+    dwell_time = check_get(notes, 'DwellTime')
 
     dwell_start_time = data['t'].loc[trigger_index]
     dwell_end_time = dwell_start_time + dwell_time
@@ -72,19 +74,11 @@ def load_ibw(filename: str) -> curves.Curve:
     dwell_end_index = int(np.argmin(np.abs(data.loc[:, 't'] - dwell_end_time)))
     dwell_range = [trigger_index, dwell_end_index-1]
 
-    if notes.get('SpringConstant'):
-        k = float(notes['SpringConstant'])
-    else:
-        print("Missing SpringConstant")
-        k = 0.0
+    k = check_get(notes, 'SpringConstant')
 
     data.loc[:, 'f'] = data.loc[:, 'defl'] * k
 
-    if notes.get('InvOLS'):
-        invOLS = float(notes['InvOLS'])
-    else:
-        print("Missing InvOLS")
-        invOLS = 0.0
+    invOLS = check_get(notes, 'InvOLS')
 
     this_curve = curves.Curve(
         filename=filename.split(os.path.sep)[-1],
