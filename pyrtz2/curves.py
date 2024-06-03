@@ -35,6 +35,7 @@ class Curve:
     contact_values: pd.Series | None = None
     max_ind: float
     max_f: float
+    t_ind: float
     vel_ind: float
     vel_z: float
     figs_data: dict[str, tuple[np.ndarray, np.ndarray]]
@@ -43,6 +44,7 @@ class Curve:
     indent_R2: float
     hertzian_param: list[float]
     hertzian_R2: float
+    t_dwell: float
     dwell_param: list[float]
     dwell_R2: float
     contact_fig: go.Figure
@@ -64,7 +66,7 @@ class Curve:
         self.invOLS = invOLS
         self.k = k
         self.dwell_range = dwell_range
-
+        self.t_dwell = float(notes['DwellTime'])
         self.backup_data()
 
     def backup_data(self) -> None:
@@ -271,6 +273,7 @@ class Curve:
 
         self.max_ind = np.max(indent['ind'])
         self.max_f = np.max(indent['f'])
+        self.t_ind = np.max(indent['t'])
 
         if isinstance(ind, float):
             self.hertzian_param, self.hertzian_R2, hertzian_y_pred = self.fit_indent_until(
@@ -390,6 +393,7 @@ class Curve:
         fit_results_dict = {
             'max_ind': self.max_ind,
             'max_f': self.max_f,
+            't_ind': self.t_ind,
 
             'vel_ind': self.vel_ind,
             'vel_z': self.vel_z,
@@ -401,6 +405,8 @@ class Curve:
 
             'Hertzian_E': self.hertzian_param[0],
             'Hertzian_R2': self.hertzian_R2,
+
+            't_dwell': self.t_dwell,
 
             'dwell_c': self.dwell_param[0],
             'dwell_tau1': self.dwell_param[1],
