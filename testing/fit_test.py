@@ -1,9 +1,9 @@
-from pyrtz2 import fit
-
 import numpy as np
-import numpy.typing as npt
 from scipy.optimize import curve_fit
 from sklearn.metrics import r2_score as r2
+
+from pyrtz2 import fit
+
 
 # Functions
 def powerlaw(x, a, b):
@@ -19,15 +19,15 @@ def hertzian(ind, diameter, e_star):
 
 
 def exponential(t, y_0, tau, y_f):
-    return (y_0 - y_f) * np.exp(-(t-t[0]) * tau) + y_f
+    return (y_0 - y_f) * np.exp(-(t - t[0]) * tau) + y_f
 
 
 def biexponential(t, y_0, c, tau1, tau2, y_f):
-    return (y_0 - y_f) * (c * np.exp(-(t-t[0]) * tau1) + (1 - c) * np.exp(-(t-t[0]) * tau2)) + y_f
+    return (y_0 - y_f) * (c * np.exp(-(t - t[0]) * tau1) + (1 - c) * np.exp(-(t - t[0]) * tau2)) + y_f
 
 
 def poroelastic(t, y_0, c, tau1, tau2, y_f):
-    return (y_0 - y_f) * (c * np.exp(-np.sqrt(t-t[0]) * tau1) + (1 - c) * np.exp(-(t-t[0]) * tau2)) + y_f
+    return (y_0 - y_f) * (c * np.exp(-np.sqrt(t - t[0]) * tau1) + (1 - c) * np.exp(-(t - t[0]) * tau2)) + y_f
 
 
 # Fitting
@@ -151,6 +151,7 @@ def poroelastic_fit(x, y, bound=False):
     r2_score = r2(y, y_pred)
     return popt, r2_score, y_pred
 
+
 def comparison_test(x, y, fa, fb, *t):
     popt_a, r2_a, Yp_a = fa(x, y, *t)
     popt_b, r2_b, Yp_b = fb(x, y, *t)
@@ -158,9 +159,13 @@ def comparison_test(x, y, fa, fb, *t):
     # print(f"Old: {popt_a}\n")
     # print(f"New: {popt_b}\n")
 
-    np.testing.assert_almost_equal(popt_a, popt_b)
-    np.testing.assert_almost_equal(r2_a, r2_b)
-    np.testing.assert_almost_equal(Yp_a, Yp_b)
+    assert np.array_equal(popt_a, popt_b)
+    assert r2_a == r2_b
+    assert np.array_equal(Yp_a, Yp_b)
+    # np.testing.assert_almost_equal(popt_a, popt_b)
+    # np.testing.assert_almost_equal(r2_a, r2_b)
+    # np.testing.assert_almost_equal(Yp_a, Yp_b)
+
 
 def general_test(x, y, fa, popt_b=None, *t):
     popt_a, r2_a, Yp_a = fa(x, y, *t)
@@ -169,12 +174,13 @@ def general_test(x, y, fa, popt_b=None, *t):
     # print(f"Parameters: {popt_a}, {r2_a}\n")
     # print(f"Expected: {y}\n")
     # print(f"Calculated: {Yp_a}\n")
-    print(f"Max Error {max(abs(y-Yp_a))}\n")
+    print(f"Max Error {max(abs(y - Yp_a))}\n")
     # print(f"New: {popt_b}\n")
 
-    if (popt_b):
-        np.testing.assert_almost_equal(popt_a, popt_b)
-    
+    # if popt_b:
+        # assert popt_a == popt_b
+        # np.testing.assert_almost_equal(popt_a, popt_b)
+
     # np.testing.assert_almost_equal(r2_a, r2_b)
     # np.testing.assert_almost_equal(Yp_a, y)
 
@@ -193,7 +199,7 @@ if __name__ == '__main__':
     general_test(x, fit.poly(x, 1, 2, 3), fit.poly_fit)
     general_test(x, fit.poly(x, 4, 5, 6), fit.poly_fit)
     print("Passed Poly Fit Tests...\n")
-    
+
     general_test(x, fit.hertzian(x, 1, 2), fit.hertzian_fit, None, 1)
     general_test(x, fit.hertzian(x, 3, 4), fit.hertzian_fit, None, 3)
     print("Passed Hertzian Fit Tests...\n")
@@ -221,7 +227,7 @@ if __name__ == '__main__':
     comparison_test(x, fit.poly(x, 1, 2, 3), poly_fit, fit.poly_fit)
     comparison_test(x, fit.poly(x, 4, 5, 6), poly_fit, fit.poly_fit)
     print("Passed Poly Fit Comparison Tests...\n")
-    
+
     comparison_test(x, fit.hertzian(x, 1, 2), hertzian_fit, fit.hertzian_fit, 1)
     comparison_test(x, fit.hertzian(x, 3, 4), hertzian_fit, fit.hertzian_fit, 3)
     print("Passed Hertzian Fit Comparison Tests...\n")
@@ -237,10 +243,3 @@ if __name__ == '__main__':
     comparison_test(x, fit.poroelastic(x, 1, 2, 3, 4, 5), poroelastic_fit, fit.poroelastic_fit)
     comparison_test(x, fit.poroelastic(x, 6, 7, 8, 9, 10), poroelastic_fit, fit.poroelastic_fit)
     print("Passed Poroelastic Fit Comparison Tests...\n")
-    
-
-
-
-
-
-
