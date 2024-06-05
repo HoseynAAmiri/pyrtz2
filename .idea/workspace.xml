@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c173e753-6178-4faa-94d9-d6f77e5c133d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/testing/fit_test_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fit_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/testing/fit_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyrtz2/fit.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyrtz2/fit.py" afterDir="false" />
-    </list>
+    <list default="true" id="c173e753-6178-4faa-94d9-d6f77e5c133d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
