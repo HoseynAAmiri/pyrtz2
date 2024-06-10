@@ -6,7 +6,7 @@ build-backend = "flit_core.buildapi"
 name = "pyrtz2"
 authors = [{name = "Hoseyn A. Amiri", email = "aamirihoseyn@gmail.com"}]
 readme = "README.md"
-requires-python = ">=3.10.0"
+requires-python = ">=3.11.1"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"]
 dynamic = ["version", "description"]
