@@ -5,7 +5,7 @@ Analysis of AFM force curves and images via Python. Built upon its legacy versio
 Developed at Georgia Institute of Technology
 
 # Installation
-pyrtz2 is on PyPI. Install using pip (Python version >= 3.10.0 is required)
+pyrtz2 is on PyPI. Install using pip (Python version >= 3.11.1 is required)
 
 ```
 pip install pyrtz2
