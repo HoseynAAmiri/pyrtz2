@@ -10,13 +10,11 @@ from ..utils.utils import load, get_current_annotation
 
 
 class Curve(Protocol):
-    def detect_contact(self) -> int:
-        ...
+    def detect_contact(self) -> int: ...
 
 
 class CurveSet(Protocol):
-    def __getitem__(self, key: tuple[str]) -> Curve:
-        ...
+    def __getitem__(self, key: tuple[str]) -> Curve: ...
 
 
 class AFM(Protocol):
@@ -73,15 +71,17 @@ def render(app: Dash) -> html.Div:
 
     @app.callback(
         [Output(ids.CP_ANNOTATIONS, 'data', allow_duplicate=True),
-         Output(ids.DETECT_CONTACT, 'children')],
+         Output(ids.DETECT_CONTACT, 'children'),
+         Output(ids.VD_CHECKLIST, 'value')],
         [Input(ids.RESET_CONTACT, 'n_clicks'),
          Input(ids.DETECT_CONTACT, 'n_clicks')],
         [State(ids.CURVE_DROPDOWN, 'value'),
          State(ids.CP_ANNOTATIONS, 'data'),
-         State(ids.EXPERIMENT, 'data')],
+         State(ids.EXPERIMENT, 'data'),
+         State(ids.VD_CHECKLIST, 'value')],
         prevent_initial_call=True
     )
-    def update_contact(reset, detect, curve_value, cp_data, encoded_experiment):
+    def update_contact(reset, detect, curve_value, cp_data, encoded_experiment, vd_checklist):
         ctx = callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -89,14 +89,17 @@ def render(app: Dash) -> html.Div:
 
         key = eval(curve_value)['key']
         cp_annotations = json.loads(cp_data)
+        vd_update = no_update
         if trigger_id == ids.RESET_CONTACT:
             cp_annotations[repr(key)] = 0
+            if vd_checklist:
+                vd_update = []
         elif trigger_id == ids.DETECT_CONTACT:
             afm: AFM = load(encoded_experiment)
             cp_annotations[repr(
                 key)] = afm.experiment[key].detect_contact()
 
-        return json.dumps(cp_annotations), no_update
+        return json.dumps(cp_annotations), no_update, vd_update
 
     return html.Div(
         children=[
