@@ -1,3 +1,3 @@
-"""Force spectroscopy in Python"""
+import importlib.metadata
 
-__version__ = "1.2.3"
+__version__ = importlib.metadata.version("pyrtz2")

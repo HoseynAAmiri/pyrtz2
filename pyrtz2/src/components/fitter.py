@@ -20,13 +20,19 @@ def render(app: Dash) -> html.Div:
         ctx = callback_context
         trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
         indentation = process_indentation(indentation)
+
         if trigger_id == ids.FIT_CHECKLIST and indentation == 0.0:
             return no_update, [], "Unable to proceed without indentation!"
 
-        if trigger_id == ids.FIT_CHECKLIST and not adjust:
-            adjust = [True]
         if trigger_id == ids.ADJUST_CHECKLIST and fit:
             fit = []
+
+        if trigger_id == ids.ADJUST_CHECKLIST and not fit:
+            return no_update
+
+        if trigger_id == ids.FIT_CHECKLIST and not adjust:
+            adjust = [True]
+
         return adjust, fit, no_update
 
     return html.Div(
