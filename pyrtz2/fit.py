@@ -114,7 +114,14 @@ def biexponential_fit(x, y, bound=False):
         def ubnd_wrapper(t, c, tau1, tau2, y_f):
             return biexponential(t, y[0], c, tau1, tau2, y_f)
 
-        p0 = [0.4, 1, 0.1, 0]
+        y0 = y[0]
+        y_f = y[-1]
+        e_threshold = y0 - 0.63 * (y0 - y_f)
+        e_time = x[np.where(y < e_threshold)[0][0]]
+        tau1_guess = e_time
+        tau2_guess = 0.1 * tau1_guess
+
+        p0 = [0.4, tau1_guess, tau2_guess, y_f]
         bounds = ([0, 0, 0, -np.inf], [1, np.inf, np.inf, np.inf])
         popt, _ = curve_fit(ubnd_wrapper, x, y,
                             bounds=bounds, p0=p0, jac='3-point')
