@@ -137,7 +137,8 @@ class Curve:
 
     def get_approach_rates(self) -> None:
         indent = self.get_indent()
-        t, ind, z = indent['t'], indent['ind'], indent['z']
+        t, ind, z = indent['t'].to_numpy(
+        ), indent['ind'].to_numpy(), indent['z'].to_numpy()
         self.vel_ind = lin_fit(t, ind)[0][0]
         self.vel_z = lin_fit(t, z)[0][0]
 
@@ -179,21 +180,21 @@ class Curve:
     def fit_indent(self) -> tuple:
         self.check_contact()
         indent = self.get_indent()
-        return poly_fit(indent['ind'], indent['f'])
+        return poly_fit(indent['ind'].to_numpy(), indent['f'].to_numpy())
 
     def fit_indent_until(self, probe_diameter: float, ind: float) -> tuple:
         self.check_contact()
         indent_until = self.get_indent_until(ind)
-        return hertzian_fit(indent_until['ind'], indent_until['f'], probe_diameter)
+        return hertzian_fit(indent_until['ind'].to_numpy(), indent_until['f'].to_numpy(), probe_diameter)
 
     def fit_indent_between(self, probe_diameter: float, interval: list[float] = [0.0, 1.0]) -> tuple:
         self.check_contact()
         indent_between = self.get_indent_between(interval[0], interval[1])
-        return hertzian_fit(indent_between['ind'], indent_between['f'], probe_diameter)
+        return hertzian_fit(indent_between['ind'].to_numpy(), indent_between['f'].to_numpy(), probe_diameter)
 
     def fit_dwell(self) -> tuple:
         dwell = self.get_dwell()
-        return biexponential_fit(dwell['t'], dwell['f'])
+        return biexponential_fit(dwell['t'].to_numpy(), dwell['f'].to_numpy())
 
     def get_figs_data(self, vd: bool = False, adjust: bool = False) -> None:
         if vd or adjust:

@@ -15,8 +15,8 @@ def render(app: Dash) -> html.Div:
         [Input(ids.CURVE_DROPDOWN, 'value'),
          Input(ids.CLIP_LIMIT, 'value'),
          Input(ids.SQUARE_VALUE, 'value'),
-         Input(ids.IM_DROPDOWN, 'value')],
-        State(ids.IM_ANNOTATIONS, 'data'),
+         Input(ids.IM_DROPDOWN, 'value'),
+         Input(ids.IM_ANNOTATIONS, 'data')],
         prevent_initial_call=True
     )
     def update_im(curve_value, clipLimit, sq, im_value, im_data):
@@ -29,7 +29,7 @@ def render(app: Dash) -> html.Div:
         key = eval(curve_value)['key']
         im_annotations = json.loads(im_data)
         im = im_annotations[repr(key)]
-        if trigger_id == ids.CURVE_DROPDOWN:
+        if trigger_id in (ids.CURVE_DROPDOWN, ids.IM_ANNOTATIONS):
             selection = im['selection']
             if selection == 'auto':
                 clipLimit = im['contrast']
