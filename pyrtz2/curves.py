@@ -422,10 +422,10 @@ class Curve:
 
 
 class CurveSet:
-    vd_dict: dict[tuple[str], bool] = {}
-    cp_dict: dict[tuple[str], int] = {}
+    vd_dict: dict[tuple[str, ...], bool] = {}
+    cp_dict: dict[tuple[str, ...], int] = {}
 
-    def __init__(self, ident_labels: list[str], curve_dict: dict[tuple[str], Curve]) -> None:
+    def __init__(self, ident_labels: list[str], curve_dict: dict[tuple[str, ...], Curve]) -> None:
 
         self.ident_labels = ident_labels
         self.curve_dict = curve_dict
@@ -443,24 +443,24 @@ class CurveSet:
         else:
             raise StopIteration
 
-    def __getitem__(self, key: tuple[str]) -> Curve:
+    def __getitem__(self, key: tuple[str, ...]) -> Curve:
         return self.curve_dict[key]
 
-    def items(self) -> Iterable[tuple[tuple[str], Curve]]:
+    def items(self) -> Iterable[tuple[tuple[str, ...], Curve]]:
         return self.curve_dict.items()
 
     def pickle(self, filename: str) -> None:
         with open(filename, 'wb') as f:
             pickle.dump(self, f)
 
-    def keys(self) -> list[tuple[str]]:
+    def keys(self) -> list[tuple[str, ...]]:
         return list(self.curve_dict.keys())
 
     def reduce_data(self) -> None:
         for curve in self:
             curve.reduce_data()
 
-    def remove_curve(self, key: tuple[str]) -> None:
+    def remove_curve(self, key: tuple[str, ...]) -> None:
         del self.curve_dict[key]
 
     def remove_unannotated(self) -> None:
@@ -485,7 +485,7 @@ class CurveSet:
         for key, value in self.cp_dict.items():
             self[key].set_contact_index(value)
 
-    def update_annotations(self, annotations_dict: dict[tuple[str], Any]) -> None:
+    def update_annotations(self, annotations_dict: dict[tuple[str, ...], Any]) -> None:
         value = next(iter(annotations_dict.values()))
         if isinstance(value, bool):
             self.vd_dict = annotations_dict
