@@ -55,7 +55,7 @@ def get_pdf(pdf_merger: PdfMerger) -> BytesIO:
     return pdf_bytes
 
 
-def process_images(images: dict, keys: list[tuple[str]], im_data: str, pixel: float = 1.0) -> pd.DataFrame:
+def process_images(images: dict, keys: list[tuple[str, ...]], im_data: str, pixel: float = 1.0) -> pd.DataFrame:
     cell_info_list = []
 
     for key in keys:
