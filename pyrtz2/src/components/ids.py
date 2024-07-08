@@ -3,7 +3,7 @@ EXPERIMENT_LABELS = "experiment-labels"
 PROBE_DIAMETER = "probe-diameter"
 LOAD_EXPERIMENT = "load-experiment"
 LOG = "load-output"
-EXPERIMENT = "experiment"
+EXPERIMENT_CACHE = "experiment-cache"
 IMAGES = "images"
 
 CURVE_DROPDOWN = "curve-dropdown"
