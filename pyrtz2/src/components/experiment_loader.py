@@ -5,12 +5,12 @@ import os
 
 from ...afm import AFM
 from ..components import ids
-from ..utils.utils import dump, make_json
+from ..utils.utils import make_json, save_afm
 
 
 def render(app: Dash) -> dcc.Store:
     @app.callback(
-        [Output(ids.EXPERIMENT, 'data', allow_duplicate=True),
+        [Output(ids.EXPERIMENT_CACHE, 'data', allow_duplicate=True),
          Output(ids.CP_ANNOTATIONS, 'data', allow_duplicate=True),
          Output(ids.VD_ANNOTATIONS, 'data', allow_duplicate=True),
          Output(ids.IM_ANNOTATIONS, 'data', allow_duplicate=True)],
@@ -20,7 +20,7 @@ def render(app: Dash) -> dcc.Store:
          State(ids.PROBE_DIAMETER, 'value')],
         prevent_initial_call=True
     )
-    def store_experiment_info(_, experiment_path, labels, probe_diameter):
+    def store_experiment_info(n_clicks, experiment_path, labels, probe_diameter):
         if not experiment_path or not os.path.exists(experiment_path) or not os.path.isdir(experiment_path):
             raise PreventUpdate
 
@@ -36,6 +36,16 @@ def render(app: Dash) -> dcc.Store:
         vd_data = make_json(experiment.curve_keys, False)
         im_data = make_json(experiment.curve_keys, {'selection': 'exclude',
                                                     'clickData': []})
-        return dump(experiment), cp_data, vd_data, im_data
 
-    return dcc.Store(id=ids.EXPERIMENT)
+        cache_path = experiment_path + '/.cache'
+        os.makedirs(cache_path, exist_ok=True)
+        experiment_file_path = save_afm(cache_path, experiment, name='raw')
+
+        experiment_temp = {
+            'raw': experiment_file_path,
+            'processed': cache_path,
+        }
+
+        return experiment_temp, cp_data, vd_data, im_data
+
+    return dcc.Store(id=ids.EXPERIMENT_CACHE)
