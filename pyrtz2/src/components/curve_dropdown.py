@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output, State
 from typing import Protocol
 
 from . import ids
-from ..utils.utils import load
+from ..utils.utils import load_afm
 
 
 class AFM(Protocol):
@@ -17,13 +17,13 @@ def render(app: Dash) -> html.Div:
         [Output(ids.CURVE_DROPDOWN, 'options'),
          Output(ids.CURVE_DROPDOWN, 'value', allow_duplicate=True),
          Output(ids.LOG, 'children', allow_duplicate=True)],
-        [Input(ids.EXPERIMENT, 'data')],
+        [Input(ids.EXPERIMENT_CACHE, 'data')],
         [State(ids.EXPERIMENT_LABELS, 'value'),
-         State(ids.LOG, 'children')],
+         State(ids.EXPERIMENT_PATH, 'value')],
         prevent_initial_call=True
     )
-    def update_curve_dropdown(encoded_experiment, labels, exp_output):
-        experiment: AFM = load(encoded_experiment)
+    def update_curve_dropdown(experiment_temp, labels, experiment_path):
+        experiment = load_afm(experiment_temp['raw'])
         keys = experiment.curve_keys
         label_list = [label.strip() for label in labels.split(';')]
 
@@ -53,8 +53,8 @@ def render(app: Dash) -> html.Div:
             )
             options.append({'label': dropdown_label, 'value': dropdown_value})
 
-        exp_name = exp_output.split('\'')[1]
-        return options, options[0]['value'], html.Div(f"Experiment '{exp_name}' loaded.", id=ids.LOG)
+        exp_name = experiment_path.split('\\')[-1]
+        return options, options[0]['value'], f"Experiment '{exp_name}' loaded."
 
     @app.callback(
         Output(ids.CURVE_DROPDOWN, 'value'),

@@ -8,4 +8,5 @@ def run(debug: bool = False, port: int = 8050) -> None:
     app = Dash(__name__, external_stylesheets=[BOOTSTRAP])
     app.title = "AFM Data Analysis"
     app.layout = create_layout(app)
+
     app.run(debug=debug, port=str(port))

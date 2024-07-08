@@ -1,15 +1,17 @@
-from plotly import graph_objs as go
-
-import PyPDF2 as pdf
-import pickle
-import pandas as pd
-import numpy as np
 import json
 import ast
 import io
+import pickle
+
+import PyPDF2 as pdf
+import pandas as pd
+import numpy as np
+
 from tqdm import tqdm
 from typing import Any, Iterable, overload
 from time import sleep
+
+from plotly import graph_objs as go
 
 from .fit import lin_fit, poly_fit, hertzian_fit, biexponential_fit
 from .src.components.fig import make
