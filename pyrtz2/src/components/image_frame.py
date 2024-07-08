@@ -1,7 +1,8 @@
+import json
+
 from dash import Dash, html, no_update
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
-import json
 
 from . import ids, image
 from ..utils.utils import load, get_current_annotation, parse_path

@@ -6,7 +6,7 @@ from typing import Protocol
 import json
 
 from . import ids, fig
-from ..utils.utils import load, get_current_annotation
+from ..utils.utils import load_afm, get_current_annotation
 
 
 class Curve(Protocol):
@@ -77,11 +77,11 @@ def render(app: Dash) -> html.Div:
          Input(ids.DETECT_CONTACT, 'n_clicks')],
         [State(ids.CURVE_DROPDOWN, 'value'),
          State(ids.CP_ANNOTATIONS, 'data'),
-         State(ids.EXPERIMENT, 'data'),
+         State(ids.EXPERIMENT_CACHE, 'data'),
          State(ids.VD_CHECKLIST, 'value')],
         prevent_initial_call=True
     )
-    def update_contact(reset, detect, curve_value, cp_data, encoded_experiment, vd_checklist):
+    def update_contact(reset, detect, curve_value, cp_data, experiment_temp, vd_checklist):
         ctx = callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -95,7 +95,7 @@ def render(app: Dash) -> html.Div:
             if vd_checklist:
                 vd_update = []
         elif trigger_id == ids.DETECT_CONTACT:
-            afm: AFM = load(encoded_experiment)
+            afm = load_afm(experiment_temp['raw'])
             cp_annotations[repr(
                 key)] = afm.experiment[key].detect_contact()
 

@@ -1,11 +1,16 @@
 import ast
+
 import json
-from PyPDF2 import PdfMerger
+import io
+
 import pandas as pd
+import PyPDF2 as pdf
+
+from tqdm import tqdm
 from io import BytesIO
+from PyPDF2 import PdfMerger
 
-
-from ..components.image import read, get_cell_info, process_image
+from ..components.image import read, get_cell_info, process_image, handle_image
 from ...afm import AFM
 
 
@@ -76,3 +81,34 @@ def process_images(images: dict, keys: list[tuple[str, ...]], im_data: str, pixe
         cell_info_list.append(cell_info)
 
     return pd.DataFrame(cell_info_list)
+
+
+def merge_images(images: dict, im_data: str):
+    merger = pdf.PdfMerger()
+    annotations = json.loads(im_data)
+
+    for key, im in tqdm(annotations.items()):
+        key = eval(key)
+        new_key = key[:-1] if len(key) > 1 else key
+        for image_key, image_paths in images.items():
+            if image_key != new_key:
+                continue
+
+            # THIS ONLY SHOWS THE FIRST IMAGE IF THERE IS ONE
+            image_path = image_paths[0]
+            img = handle_image(image_path, im)
+
+            title = ("").join(image_path.split('\\')[-1].split('.')[:-1])
+            title = fr"$\text{{{title}}}$"
+            img.update_layout(
+                title={
+                    'text': title,
+                    'x': 0.5,
+                    'y': 0.95,
+                    'xanchor': 'center'
+                }
+            )
+            img_pdf = io.BytesIO(img.to_image(format='pdf'))
+            merger.append(img_pdf)
+
+    return merger

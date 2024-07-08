@@ -7,6 +7,8 @@ import json
 import os
 from datetime import datetime
 
+from ...afm import AFM
+
 
 def get_current_annotation(current_dropdown_value, data: str):
     key = eval(current_dropdown_value)['key']
@@ -54,6 +56,19 @@ def dump(data):
     serialized_data = pickle.dumps(data)
     encoded_data = serialized_data.hex()
     return encoded_data
+
+
+def save_afm(path: str, afm: AFM, name: str, prefix='pyrtz2_', suffix='.afm'):
+    random_filename = f"{prefix}{name}{suffix}"
+    file_path = os.path.join(path, random_filename)
+    with open(file_path, 'wb') as f:
+        pickle.dump(afm, f)
+    return str(file_path)
+
+
+def load_afm(file_path) -> AFM:
+    with open(file_path, 'rb') as f:
+        return pickle.load(f)
 
 
 def extract_keys(name: str, labels: list[str]) -> tuple[str, ...]:
