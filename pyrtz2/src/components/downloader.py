@@ -81,7 +81,7 @@ def render(app: Dash) -> html.Div:
             df = df_fits.join(df_images)
 
             processed_file_path = save_afm(
-                experiment_cache['processed'], experiment_processed, name='processed')
+                experiment_cache['processed'], experiment_processed, name='processed')  # cant do this if you have processed it already
             experiment_cache['processed'] = processed_file_path
 
             return dcc.send_data_frame(df.to_csv, filename=f"{exp_name}_fits.csv"), experiment_cache, no_update, no_update
