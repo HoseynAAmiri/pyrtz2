@@ -96,7 +96,6 @@ class Curve:
         self.data -= self.get_contact_values()
 
     def get_data_between(self, first: int, last: int) -> pd.DataFrame:
-        last = last if last != -1 else -2
         return self.data.iloc[first:last+1].reset_index(drop=True)
 
     def get_approach(self) -> pd.DataFrame:
