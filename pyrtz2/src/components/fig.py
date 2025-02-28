@@ -133,12 +133,13 @@ def handle_figure(
 def update_contact_line(cp: int, fig: dict | go.Figure) -> go.Figure:
     if isinstance(fig, dict):
         fig = go.Figure(fig)
-    data_x = fig.data[0]['x']
-    data_y = fig.data[0]['y']
-    fig.layout['shapes'][0]['x0'] = data_x[cp]
-    fig.layout['shapes'][0]['x1'] = data_x[cp]
-    fig.layout['shapes'][1]['y0'] = data_y[cp]
-    fig.layout['shapes'][1]['y1'] = data_y[cp]
+
+    data_x = fig.data[0]['x']['_inputArray']
+    data_y = fig.data[0]['y']['_inputArray']
+    fig.layout['shapes'][0]['x0'] = data_x[str(cp)]
+    fig.layout['shapes'][0]['x1'] = data_x[str(cp)]
+    fig.layout['shapes'][1]['y0'] = data_y[str(cp)]
+    fig.layout['shapes'][1]['y1'] = data_y[str(cp)]
     fig.layout['title']['text'] = fr"$\text{{Selected Contact Point: {cp}}}$"
 
     return fig
